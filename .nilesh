@@ -1,0 +1,196 @@
+##export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26
+export HISTSIZE=10000
+export HISTTIMEFORMAT='%F %T '
+export HISTCONTROL=erasedups
+
+## adding color to the console
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+export TERM="xterm-color"
+PS1="\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] "
+#PS1='\[\033[0;33m\]\u\[\033[0m\]@\[\033[0;32m\]\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+
+export HOME=/Users/nileshmp
+export trunk=/Users/nileshmp/work/codebase/repos/ct_source/trunk
+
+#####Trunk related
+alias commonlib='cd $HOME/work/codebase/common-lib'
+alias tomcat='cd $trunk/ext-lib/apache-tomcat-6.0.26'
+alias stoptomcat='$trunk/ext-lib/apache-tomcat-6.0.26/bin/shutdown.sh'
+alias starttomcat='$trunk/ext-lib/apache-tomcat-6.0.26/bin/startup.sh'
+alias svntrunk='cd $trunk'
+alias svnsmallworld='cd $trunk/smallworld'
+alias webcheckin='cd $trunk/webcheckin'
+alias b='$trunk/b'
+alias gittrunk='cd $HOME/work/codebase/git/cts/trunk'
+#####Trunk related
+
+#Custom aliases
+#ssh to go server
+alias sshToGoAsGo='ssh go@go.cleartrip.com'
+alias sshToGoAsCleartrip='ssh cleartrip@go.cleartrip.com'
+alias sshToGoAsRoot='ssh root@go.cleartrip.com'
+alias sshToHudsonAsCleartrip='ssh cleartrip@hudson.cleartrip.com'
+
+#ssh to STG1 environment
+alias sshToSTG1AsDeploy='ssh deploy@172.16.50.25'
+alias sshToSTG1AsRoot='ssh deploy@172.16.50.25'
+
+
+#ssh to Dev environment
+alias sshToDevAsCleartrip='ssh cleartrip@172.16.54.24'
+alias sshToDevAsCleartrip='ssh cleartrip@172.16.54.22'
+
+alias ctb='cd $HOME/work/codebase/CT_FB_GOTRIAL'
+alias anthome='cd $HOME/work/apache-ant-1.8.1'
+alias grand='$HOME/work/Grand/grand-ui-0.7.2/grand-ui'
+alias antsh='$HOME/work/antsh/bin/antsh'
+alias work='cd $HOME/work'
+alias up='svn update .'
+alias status='svn status'
+alias revert='svn revert --recursive .'
+alias cls='clear'
+alias load='source ~/.bash_aliases'
+#Custom alias end here
+
+#Custom functions starts here
+function cleansvnfolders(){ find $1 -name ".svn" -type d -exec rm -rf {} \; ;};
+function findinfiles(){ find . -name '$2' | xargs grep '$1' ;};
+function findinhistory() { history | grep $1;};
+function findinjars() {
+  for d in *; do
+    if [ -d $d ]; then
+        (cd $d; findinjars $1)
+    fi
+    if [[ "$d" == *.jar* ]]; then
+	output=$(jar tvf $d | grep $1)
+	if [[ "$output" == *$1* ]]; then
+		echo "<----- $d starts ----->"
+		echo "$output"
+		echo "<----- $d ends   ----->"
+	fi
+    fi
+  done ;
+};
+function commit(){ svn commit . -m "$1" ;};
+function diff(){ svn diff $1 ;};
+function revert(){ svn revert $1 ;};
+function openbuildfor(){
+	filename='build.xml'
+	for file in $( find . -name $filename )
+	do
+		matches=$(cat $file | grep "name=\"$1\"")
+        	if [ -n "$matches" ]
+        	then
+	               	vi "$file"
+		break
+        	fi
+	done
+};
+function openclasspathfor(){
+        filename='build.xml'
+        for file in $( find . -name $filename )
+        do
+                matches=$(cat $file | grep "name=\"$1\"")
+                if [ -n "$matches" ]
+                then
+                        vi ${file/build.xml/classpath.properties}
+                break
+                fi
+        done
+};
+function openincludefor(){
+        filename='build.xml'
+        for file in $( find . -name $filename )
+        do
+                matches=$(cat $file | grep "name=\"$1\"")
+                if [ -n "$matches" ]
+                then
+                        vi ${file/build.xml/include.xml}
+                break
+                fi
+        done
+};
+function findprocessfor(){
+	ps aux | grep '$1'
+};
+
+function killprocess(){
+	kill -9 '$1'
+};
+
+function deletefolderrecursively(){
+	find . -name "$1" -type d -exec rm -rf {} \;
+};
+
+function cleantomcat(){
+  dir=$(pwd)
+  if [ "$1" == "" ]
+  then
+    echo "please pass the war file name you want to delete";
+    return;
+  fi
+  cd $trunk/ext-lib/apache-tomcat-6.0.26;
+  rm -rf logs/*;
+  rm -rf work;
+  rm webapps/$1.war;
+  rm -rf webapps/$1;
+  cd $dir;
+};
+
+function qa2machines(){
+         dns=172.16.56.30;
+         ip=172.16.53.12,172.16.53.14,172.16.53.16,172.16.53.18,172.16.53.23,172.16.53.24,172.16.53.25,172.16.53.26,172.16.53.28,172.16.53.30,172.16.53.32,172.16.53.34,172.16.53.36,172.16.53.38,172.16.53.40,172.16.53.41,172.16.53.42,172.16.53.44,172.16.53.46,172.16.53.50,172.16.53.52,172.16.53.54,172.16.53.56,172.16.53.60,172.16.53.61,172.16.53.62,172.16.53.65,172.16.53.67,172.16.53.68,172.16.53.73,172.16.53.74;
+         arr=$(echo $ip | tr "," "\n")
+         count=1;
+         list=();
+         for x in $arr
+         do
+                temp=$(dig +short -x $x @$dns)==$x;
+                temp=$(echo $temp);
+                list=( "${list[@]}" "$temp" )
+                #echo "${list[@]}";
+                #echo $count " IP: " $x " hostname: " $(dig +short -x $x @$dns)
+                count=`expr $count + 1`;
+         done 
+         #echo len=${#list[*]}
+         #for a in "${list[@]}"; do echo "$a"; done
+         #readarray -t sorted < <(for a in "${list[@]}"; do echo "$a"; done | sort)
+         #sorted=($(printf '%s\n' "${list[@]}"))
+         echo ${list[@]} | awk 'BEGIN{RS=" ";} {print $1}' | sort
+         for a in "${sorted[@]}"; do echo "$a"; done
+};
+function qa2logonto(){
+          dns=172.16.56.30;
+         ip=172.16.53.12,172.16.53.14,172.16.53.16,172.16.53.18,172.16.53.23,172.16.53.24,172.16.53.25,172.16.53.26,172.16.53.28,172.16.53.30,172.16.53.32,172.16.53.34,172.16.53.36,172.16.53.38,172.16.53.40,172.16.53.41,172.16.53.42,172.16.53.44,172.16.53.46,172.16.53.50,172.16.53.52,172.16.53.54,172.16.53.56,172.16.53.60,172.16.53.61,172.16.53.62,172.16.53.65,172.16.53.67,172.16.53.68,172.16.53.73,172.16.53.74;
+         arr=$(echo $ip | tr "," "\n")
+         for x in $arr
+         do
+                temp=$(dig +short -x $x @$dns);
+                if [[ $temp  == $1* ]] ;  
+                then  
+                      echo "logging into ...." $temp $x;
+                      ssh root@$x;
+                fi
+         done 
+};
+
+function svnlogsforcommits(){
+         svn log -v --limit $1;
+};
+
+function svnlogsfordays(){
+         from=$(date -v-$1d '+%Y-%m-%d');
+         to=$(date  '+%Y-%m-%d');
+         revision="{"$from"}:{"$to"}";
+         svn log -v -r $revision;
+};
+
+function svnlogsfordaysagainst(){
+        from=$(date -v-$1d '+%Y-%m-%d');
+         to=$(date  '+%Y-%m-%d');
+         revision="{"$from"}:{"$to"}";
+         svn log -r $revision -v | sed -n "1p; 2,/^-/d; /$2/,/^-/p"
+};
+
+#Custom functions end here
