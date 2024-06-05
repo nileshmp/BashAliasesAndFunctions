@@ -5,7 +5,7 @@ export PATH=$MAVEN_HOME/bin:$PATH
 ## shortcuts
 alias ll='ls -alh'
 alias edit='code'
-HOME_DIR=/Users/nilesh/work
+HOME_DIR=/Users/nilesh/work/personal
 # alias rta.pipeline.dir='cd /Users/nileshmp/Simpl/codebase/RTA'
 # alias rta.service.dir='cd /Users/nileshmp/Simpl/codebase/RTAService'
 # alias rta.maas='cd /Users/nileshmp/Simpl/codebase/challenger_model/scm/microservices/rta-maas'
@@ -327,4 +327,4 @@ list.go.versions()
     gvm list
 }
 # this helps us set golang version based on .gvmrc file when starting a new terminal/cmd session
-recursively.find.gvmrc.and.load
+# recursively.find.gvmrc.and.load
