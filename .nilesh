@@ -1,196 +1,330 @@
-##export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26
-export HISTSIZE=10000
-export HISTTIMEFORMAT='%F %T '
-export HISTCONTROL=erasedups
+## Maven related settings
+MAVEN_HOME=~/work/apache-maven-3.9.6
+export PATH=$MAVEN_HOME/bin:$PATH
 
-## adding color to the console
+## shortcuts
+alias ll='ls -alh'
+alias edit='code'
+HOME_DIR=/Users/nilesh/work
+# alias rta.pipeline.dir='cd /Users/nileshmp/Simpl/codebase/RTA'
+# alias rta.service.dir='cd /Users/nileshmp/Simpl/codebase/RTAService'
+# alias rta.maas='cd /Users/nileshmp/Simpl/codebase/challenger_model/scm/microservices/rta-maas'
+# alias codebase.dir='cd /Users/nileshmp/Simpl/codebase'
+# alias load.test='cd /Users/nileshmp/Simpl/codebase/load-test'
+# alias flink.logs='cd /Users/nileshmp/Simpl/flink-logs'
+## learning
+alias learning.dir='cd $HOME_DIR/Learning'
+alias learning.notes.dir='cd $HOME_DIR/LearningNotes'
+## dynamo on local box
+# DYNAMO_LOCAL_PATH=/Users/nileshmp/Simpl/dynamodb_local_latest
+# alias dynamo.local='cd DYNAMO_LOCAL_PATH'
+# alias start.dynamo.local='cd $DYNAMO_LOCAL_PATH && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb'
+alias golang.learning.dir='cd /Users/nileshmp/Simpl/codebase/golang/'
+alias docker.images='cd /Users/nileshmp/Simpl/codebase/docker-images/'
+# # alias pigeon.dir='cd /Users/nileshmp/Simpl/codebase/pigeon'
+
+# alias sshtodemaster='ssh 10.70.13.109'
+# alias sshtodeworker1='ssh 10.70.13.113'
+# alias sshtodeworker2='ssh 10.70.14.113'
+# alias sshtodeworker3='ssh 10.70.15.192'
+# alias sshtodeworker4='ssh 10.70.12.101'
+# alias sshtodeworker5='ssh 10.70.13.176'
+# alias sshtodeworker6='ssh 10.70.15.54'
+
+# alias sshtovalidationmaster='ssh 10.70.1.11'
+# alias sshtovalidationworker1='ssh 10.70.1.22'
+# alias sshtovalidationworker2='ssh 10.70.1.213'
+# alias sshtovalidationworker3='ssh 10.70.12.225'
+# alias sshtovalidationworker4='ssh 10.70.14.62'
+
+
+# alias sshtomaster='ssh -i ~/.ssh/id_ed25519 ec2-user@10.100.87.5'
+# alias sshtoworker1='ssh -i ~/.ssh/id_ed25519 ec2-user@10.100.87.6'
+# alias sshtoworker2='ssh -i ~/.ssh/id_ed25519 ec2-user@10.100.87.10'
+
+# alias sshtostagingmaster='ssh -i ~/.ssh/id_ed25519 ec2-user@10.80.15.98'
+# alias sshtostagingworker1='ssh -i ~/.ssh/id_ed25519 ec2-user@10.80.14.226'
+# alias sshtostagingworker2='ssh -i ~/.ssh/id_ed25519 ec2-user@10.80.14.89'
+
+
+
+# alias sshtoPOC='ssh -i ~/.ssh/id_ed25519 ubuntu@65.0.26.47' ## public IP : 65.0.26.47
+
+# alias start.redis.server='redis-server'
+
+alias plantuml.dir='cd /Users/nileshmp/Simpl/plantUML-design-and-diagrams'
+
+# function copyflinklogsprod(){
+#     source_dir='/Users/nileshmp/Simpl/flink-logs/global-prod'
+#     # create a directory with todays date
+#     # today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
+#     echo $source_dir
+#     if [ ! -d "$source_dir" ]
+#     then
+#         echo "creating directory${source_dir}"
+#         mkdir -p $source_dir
+#     fi
+#     rsync -avz ec2-user@10.100.87.5:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.100.87.6:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.100.87.10:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+# }
+
+# function copyflinklogsdeprod(){
+#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-prod'
+#     # create a directory with todays date
+#     today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
+#     echo $today
+#     if [ ! -d "$today" ]
+#     then
+#         echo "creating directory${today}"
+#         mkdir -p $today
+#     fi
+#     scp -rp ec2-user@10.70.12.173:/home/ec2-user/flink-1.14.2/log/ $today/
+#     scp -rp ec2-user@10.70.15.221:/home/ec2-user/flink-1.14.2/log/ $today/
+#     scp -rp ec2-user@10.70.12.255:/home/ec2-user/flink-1.14.2/log/ $today/
+#     scp -rp ec2-user@10.70.15.138:/home/ec2-user/flink-1.14.2/log/ $today/
+#     scp -rp ec2-user@10.70.12.178:/home/ec2-user/flink-1.14.2/log/ $today/
+# }
+
+# function copyflinklogsdeprod(){
+#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-prod'
+#     # create a directory with todays date
+#     # today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
+#     echo $source_dir
+#     if [ ! -d "$source_dir" ]
+#     then
+#         echo "creating directory${source_dir}"
+#         mkdir -p $source_dir
+#     fi
+#     rsync -avz ec2-user@10.70.12.173:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.70.15.221:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.70.12.255:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.70.15.138:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+#     rsync -avz ec2-user@10.70.12.178:/home/ec2-user/flink-1.14.2/log/ $source_dir/
+# }
+
+# function copyflinklogsdevalidationprod(){
+#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-validation-prod'
+#     # create a directory with todays date
+#     today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
+#     echo $today
+#     if [ ! -d "$today" ]
+#     then
+#         echo "creating directory${today}"
+#         mkdir -p $today
+#     fi
+#     rsync -avz ec2-user@10.70.1.213:/home/ec2-user/flink-1.14.2/log/ $today/
+#     rsync -avz ec2-user@10.70.1.22:/home/ec2-user/flink-1.14.2/log/ $today/
+# }
+
+function rsyncbkp(){
+    # The source path to backup. Can be local or remote.
+    SOURCE=$1
+    # Where to store the incremental backups
+    DESTBASE=$2
+    # Where to store today's backup
+    DEST="$DESTBASE/$(date +%Y-%m-%d)"
+    # Where to find yesterday's backup
+    YESTERDAY="$DESTBASE/$(date -v -1d +%Y-%m-%d)/"
+    echo $YESTERDAY
+    # Use yesterday's backup as the incremental base if it exists
+    if [ -d "$YESTERDAY" ]
+    then
+        OPTS="--link-dest $YESTERDAY"
+        rsync --protect-args --progress -av $OPTS "$SOURCE" "$DEST"
+    else
+        rsync --protect-args --progress -av "$SOURCE" "$DEST"
+    fi
+}
+
+# python
+export PYTHONPATH=/usr/local/bin/python3
+export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
+
+# source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# terminal customisation
+parse_git_branch() {
+    git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+}
+COLOR_DEF='%f'
+COLOR_USR='%F{243}'
+COLOR_DIR='%F{197}'
+COLOR_GIT='%F{39}'
+NEWLINE=$'\n'
+setopt PROMPT_SUBST
+export PROMPT='${COLOR_USR}%n@%M ${COLOR_DIR}%d ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}${NEWLINE}%% '
+
 export CLICOLOR=1
-export LSCOLORS=GxFxCxDxBxegedabagaced
-export TERM="xterm-color"
-PS1="\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] "
-#PS1='\[\033[0;33m\]\u\[\033[0m\]@\[\033[0;32m\]\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
 
-export HOME=/Users/nileshmp
-export trunk=/Users/nileshmp/work/codebase/repos/ct_source/trunk
-
-#####Trunk related
-alias commonlib='cd $HOME/work/codebase/common-lib'
-alias tomcat='cd $trunk/ext-lib/apache-tomcat-6.0.26'
-alias stoptomcat='$trunk/ext-lib/apache-tomcat-6.0.26/bin/shutdown.sh'
-alias starttomcat='$trunk/ext-lib/apache-tomcat-6.0.26/bin/startup.sh'
-alias svntrunk='cd $trunk'
-alias svnsmallworld='cd $trunk/smallworld'
-alias webcheckin='cd $trunk/webcheckin'
-alias b='$trunk/b'
-alias gittrunk='cd $HOME/work/codebase/git/cts/trunk'
-#####Trunk related
-
-#Custom aliases
-#ssh to go server
-alias sshToGoAsGo='ssh go@go.cleartrip.com'
-alias sshToGoAsCleartrip='ssh cleartrip@go.cleartrip.com'
-alias sshToGoAsRoot='ssh root@go.cleartrip.com'
-alias sshToHudsonAsCleartrip='ssh cleartrip@hudson.cleartrip.com'
-
-#ssh to STG1 environment
-alias sshToSTG1AsDeploy='ssh deploy@172.16.50.25'
-alias sshToSTG1AsRoot='ssh deploy@172.16.50.25'
+## Spring profiles specific 
+export ENV=dev
 
 
-#ssh to Dev environment
-alias sshToDevAsCleartrip='ssh cleartrip@172.16.54.24'
-alias sshToDevAsCleartrip='ssh cleartrip@172.16.54.22'
+## pyenv related
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
 
-alias ctb='cd $HOME/work/codebase/CT_FB_GOTRIAL'
-alias anthome='cd $HOME/work/apache-ant-1.8.1'
-alias grand='$HOME/work/Grand/grand-ui-0.7.2/grand-ui'
-alias antsh='$HOME/work/antsh/bin/antsh'
-alias work='cd $HOME/work'
-alias up='svn update .'
-alias status='svn status'
-alias revert='svn revert --recursive .'
-alias cls='clear'
-alias load='source ~/.bash_aliases'
-#Custom alias end here
+# python virtual environment
+function use.virtual.environment.python(){
+    source /Users/nileshmp/Simpl/codebase/etl-pipes/venv/bin/activate 
+}
 
-#Custom functions starts here
-function cleansvnfolders(){ find $1 -name ".svn" -type d -exec rm -rf {} \; ;};
-function findinfiles(){ find . -name '$2' | xargs grep '$1' ;};
-function findinhistory() { history | grep $1;};
-function findinjars() {
-  for d in *; do
-    if [ -d $d ]; then
-        (cd $d; findinjars $1)
+## git related
+function git.delete.all.branches(){
+    local_branch=$1
+    git.delete.local.branch $local_branch 
+    if [ $# -eq 2 ]
+    then
+        remote_branch=$2
+    else
+        remote_branch=$1
     fi
-    if [[ "$d" == *.jar* ]]; then
-	output=$(jar tvf $d | grep $1)
-	if [[ "$output" == *$1* ]]; then
-		echo "<----- $d starts ----->"
-		echo "$output"
-		echo "<----- $d ends   ----->"
-	fi
+    git.delete.remote.branch $remote_branch
+}
+
+function git.delete.remote.branch(){
+    remote_branch=$1
+    echo "deleting remote branch $remote_branch" 
+    git push origin -d $remote_branch
+}
+
+function git.delete.local.branch(){
+    echo "deleting local branch $1"
+    local_branch=$1
+    if git show-ref --quiet refs/heads/$local_branch; then
+        git branch -D $local_branch
+    else
+        echo "branch $local_branch does not exists"
     fi
-  done ;
-};
-function commit(){ svn commit . -m "$1" ;};
-function diff(){ svn diff $1 ;};
-function revert(){ svn revert $1 ;};
-function openbuildfor(){
-	filename='build.xml'
-	for file in $( find . -name $filename )
-	do
-		matches=$(cat $file | grep "name=\"$1\"")
-        	if [ -n "$matches" ]
-        	then
-	               	vi "$file"
-		break
-        	fi
-	done
-};
-function openclasspathfor(){
-        filename='build.xml'
-        for file in $( find . -name $filename )
-        do
-                matches=$(cat $file | grep "name=\"$1\"")
-                if [ -n "$matches" ]
-                then
-                        vi ${file/build.xml/classpath.properties}
-                break
-                fi
-        done
-};
-function openincludefor(){
-        filename='build.xml'
-        for file in $( find . -name $filename )
-        do
-                matches=$(cat $file | grep "name=\"$1\"")
-                if [ -n "$matches" ]
-                then
-                        vi ${file/build.xml/include.xml}
-                break
-                fi
-        done
-};
-function findprocessfor(){
-	ps aux | grep '$1'
-};
+}
 
-function killprocess(){
-	kill -9 '$1'
-};
+function git.contains.commit()
+{
+    git log --graph --decorate --oneline | grep $1
+}
 
-function deletefolderrecursively(){
-	find . -name "$1" -type d -exec rm -rf {} \;
-};
+function listJars()
+{
+    dir=$1
+    find $1 -name \*.jar -exec grep -l $2 {} \;
+}
 
-function cleantomcat(){
-  dir=$(pwd)
-  if [ "$1" == "" ]
-  then
-    echo "please pass the war file name you want to delete";
-    return;
+function loadenv() 
+{
+    echo "Loading $1 ..."
+    export $(grep -v '^#' $1 | xargs)
+    # export $(xargs < $1)
+}
+
+function unloadenv() 
+{
+    echo "Unloading $1 ..."
+    unset $(grep -v '^#' $1 | sed -E 's/(.*)=.*/\1/' | xargs)
+}
+
+## git auto-completion
+# if [ -f ~/.git-completion.bash ]; then
+#   . ~/.git-completion.bash
+# fi
+
+#  kafka related
+KAFKA_HOME=/Users/nileshmp/Simpl/kafka/kafka_2.13-3.0.0
+export PATH=$KAFKA_HOME/bin:$PATH
+alias kafka.dir='cd $KAFKA_HOME'
+## Kafka virtualisation (Docker)
+alias start.colima='colima start -f'
+
+# rabbitmq
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin
+
+# ab -k -c 5 -n 1000 -p req-payload-1.json -T application/json http://localhost:8000/v1/approve-user
+# cat id.txt | sort | uniq -c | sort
+alias rtclr.dir='cd ~/Simpl/codebase/RTCLR'
+
+# Golang related
+# source /Users/nileshmp/.gvm/scripts/gvm
+# gvm use go1.18
+
+function show.fmt.files()
+{
+    find . -name '*.go' -not -path './vendor/*' | xargs gofmt -l
+}
+
+function fmt.files()
+{
+    find . -name '*.go' -not -path './vendor/*' | xargs gofmt -l | xargs gofmt -w
+}
+
+# export PATH=$PATH:$(go env GOPATH)/bin
+
+## 
+alias go.generate.recursively='go generate $(go list ./...)'
+alias go.test.recursively='go test -cover -count=1 -race -p=1 -v $(go list ./...)'
+# alias find.gofmt.diff='diff -u <(echo -n) <(gofmt -d $(find . -type f -name \'*.go\' -not -path "./vendor/*"))'
+
+## Docker related
+alias docker.stop.all='docker stop $(docker ps -a -q)'
+alias docker.remove.all='docker rm $(docker ps -a -q)'
+
+## advanced scripts
+### running custom logic when cding into a directory
+cd() {
+    if [ -z "$1" ]
+    then
+        builtin cd
+    else
+        builtin cd "$1"
+    fi
+    recursively.find.gvmrc.and.load
+}
+
+recursively.find.gvmrc.and.load()
+{
+    WORKDIR=$(pwd)
+    HOMEDIR=$(echo $HOME)
+    until test "$WORKDIR" = "$HOMEDIR"
+    do
+        if [ -e "$WORKDIR/.gvmrc" ]; then
+            echo "detected .gvmrc file in $WORKDIR"
+            # # load the gvmrc file and read the go.version property file
+            source "$WORKDIR/.gvmrc"
+            gvm use $go_version
+            break
+        fi
+        # get the full path of the script
+        WORKDIR=$(dirname $WORKDIR)
+    done
+}
+
+load.gvmrc() {
+    # detect if the current directory has a .gvmrc file
+  if [ -e .gvmrc ]; then
+    # load the gvmrc file and read the go.version property file
+    source .gvmrc
+    gvm use $go_version
   fi
-  cd $trunk/ext-lib/apache-tomcat-6.0.26;
-  rm -rf logs/*;
-  rm -rf work;
-  rm webapps/$1.war;
-  rm -rf webapps/$1;
-  cd $dir;
-};
+}
 
-function qa2machines(){
-         dns=172.16.56.30;
-         ip=172.16.53.12,172.16.53.14,172.16.53.16,172.16.53.18,172.16.53.23,172.16.53.24,172.16.53.25,172.16.53.26,172.16.53.28,172.16.53.30,172.16.53.32,172.16.53.34,172.16.53.36,172.16.53.38,172.16.53.40,172.16.53.41,172.16.53.42,172.16.53.44,172.16.53.46,172.16.53.50,172.16.53.52,172.16.53.54,172.16.53.56,172.16.53.60,172.16.53.61,172.16.53.62,172.16.53.65,172.16.53.67,172.16.53.68,172.16.53.73,172.16.53.74;
-         arr=$(echo $ip | tr "," "\n")
-         count=1;
-         list=();
-         for x in $arr
-         do
-                temp=$(dig +short -x $x @$dns)==$x;
-                temp=$(echo $temp);
-                list=( "${list[@]}" "$temp" )
-                #echo "${list[@]}";
-                #echo $count " IP: " $x " hostname: " $(dig +short -x $x @$dns)
-                count=`expr $count + 1`;
-         done 
-         #echo len=${#list[*]}
-         #for a in "${list[@]}"; do echo "$a"; done
-         #readarray -t sorted < <(for a in "${list[@]}"; do echo "$a"; done | sort)
-         #sorted=($(printf '%s\n' "${list[@]}"))
-         echo ${list[@]} | awk 'BEGIN{RS=" ";} {print $1}' | sort
-         for a in "${sorted[@]}"; do echo "$a"; done
-};
-function qa2logonto(){
-          dns=172.16.56.30;
-         ip=172.16.53.12,172.16.53.14,172.16.53.16,172.16.53.18,172.16.53.23,172.16.53.24,172.16.53.25,172.16.53.26,172.16.53.28,172.16.53.30,172.16.53.32,172.16.53.34,172.16.53.36,172.16.53.38,172.16.53.40,172.16.53.41,172.16.53.42,172.16.53.44,172.16.53.46,172.16.53.50,172.16.53.52,172.16.53.54,172.16.53.56,172.16.53.60,172.16.53.61,172.16.53.62,172.16.53.65,172.16.53.67,172.16.53.68,172.16.53.73,172.16.53.74;
-         arr=$(echo $ip | tr "," "\n")
-         for x in $arr
-         do
-                temp=$(dig +short -x $x @$dns);
-                if [[ $temp  == $1* ]] ;  
-                then  
-                      echo "logging into ...." $temp $x;
-                      ssh root@$x;
-                fi
-         done 
-};
+gvm.init()
+{
+    if [ -z "$1" ]
+    then
+        echo "go version not passed..."
+    else
+        echo "Go version passed is ....$1"
+        touch .gvmrc
+        echo "go_version=$1" > .gvmrc
+        # echo -e ".gvmrc created with contents ; " ; cat .gvmrc
+        load.gvmrc
+    fi
+    
+}
 
-function svnlogsforcommits(){
-         svn log -v --limit $1;
-};
-
-function svnlogsfordays(){
-         from=$(date -v-$1d '+%Y-%m-%d');
-         to=$(date  '+%Y-%m-%d');
-         revision="{"$from"}:{"$to"}";
-         svn log -v -r $revision;
-};
-
-function svnlogsfordaysagainst(){
-        from=$(date -v-$1d '+%Y-%m-%d');
-         to=$(date  '+%Y-%m-%d');
-         revision="{"$from"}:{"$to"}";
-         svn log -r $revision -v | sed -n "1p; 2,/^-/d; /$2/,/^-/p"
-};
-
-#Custom functions end here
+list.go.versions()
+{
+    gvm list
+}
+# this helps us set golang version based on .gvmrc file when starting a new terminal/cmd session
+recursively.find.gvmrc.and.load
