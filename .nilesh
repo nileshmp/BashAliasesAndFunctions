@@ -1,11 +1,15 @@
+USER_DIR=/Users/nilesh
+
+## custome functions realted to path of this file
+alias print-nilesh-path='echo ~/work/personal/BashAliasesAndFunctions/.nilesh'
 ## Maven related settings
-MAVEN_HOME=~/work/apache-maven-3.9.6
+MAVEN_HOME=$USER_DIR/work/softwares/apache-maven-3.9.7
 export PATH=$MAVEN_HOME/bin:$PATH
 
 ## shortcuts
 alias ll='ls -alh'
 alias edit='code'
-HOME_DIR=/Users/nilesh/work/personal
+HOME_DIR=/Users/nilesh
 # alias rta.pipeline.dir='cd /Users/nileshmp/Simpl/codebase/RTA'
 # alias rta.service.dir='cd /Users/nileshmp/Simpl/codebase/RTAService'
 # alias rta.maas='cd /Users/nileshmp/Simpl/codebase/challenger_model/scm/microservices/rta-maas'
@@ -13,14 +17,20 @@ HOME_DIR=/Users/nilesh/work/personal
 # alias load.test='cd /Users/nileshmp/Simpl/codebase/load-test'
 # alias flink.logs='cd /Users/nileshmp/Simpl/flink-logs'
 ## learning
-alias learning.dir='cd $HOME_DIR/Learning'
-alias learning.notes.dir='cd $HOME_DIR/LearningNotes'
+alias learning.dir='cd $HOME_DIR/work/personal/Learning'
+alias learning.notes.dir='cd $HOME_DIR/work/personal/LearningNotes'
+alias compnova.dir='cd $HOME_DIR/work/Compnova'
+alias codebase.dir='cd $HOME_DIR/work/codebase'
+alias kafka.streams.dir='cd $HOME_DIR/work/codebase/kafka-streams'
+alias coding.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/coding-practice'
+alias design.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/design-practice'
+
 ## dynamo on local box
 # DYNAMO_LOCAL_PATH=/Users/nileshmp/Simpl/dynamodb_local_latest
 # alias dynamo.local='cd DYNAMO_LOCAL_PATH'
 # alias start.dynamo.local='cd $DYNAMO_LOCAL_PATH && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb'
-alias golang.learning.dir='cd /Users/nileshmp/Simpl/codebase/golang/'
-alias docker.images='cd /Users/nileshmp/Simpl/codebase/docker-images/'
+#alias golang.learning.dir='cd /Users/nileshmp/Simpl/codebase/golang/'
+#alias docker.images='cd /Users/nileshmp/Simpl/codebase/docker-images/'
 # # alias pigeon.dir='cd /Users/nileshmp/Simpl/codebase/pigeon'
 
 # alias sshtodemaster='ssh 10.70.13.109'
@@ -270,61 +280,67 @@ alias docker.remove.all='docker rm $(docker ps -a -q)'
 
 ## advanced scripts
 ### running custom logic when cding into a directory
-cd() {
-    if [ -z "$1" ]
-    then
-        builtin cd
-    else
-        builtin cd "$1"
-    fi
-    recursively.find.gvmrc.and.load
-}
+# cd() {
+#     if [ -z "$1" ]
+#     then
+#         builtin cd
+#     else
+#         builtin cd "$1"
+#     fi
+#     recursively.find.gvmrc.and.load
+# }
 
-recursively.find.gvmrc.and.load()
-{
-    WORKDIR=$(pwd)
-    HOMEDIR=$(echo $HOME)
-    until test "$WORKDIR" = "$HOMEDIR"
-    do
-        if [ -e "$WORKDIR/.gvmrc" ]; then
-            echo "detected .gvmrc file in $WORKDIR"
-            # # load the gvmrc file and read the go.version property file
-            source "$WORKDIR/.gvmrc"
-            gvm use $go_version
-            break
-        fi
-        # get the full path of the script
-        WORKDIR=$(dirname $WORKDIR)
-    done
-}
+# recursively.find.gvmrc.and.load()
+# {
+#     WORKDIR=$(pwd)
+#     HOMEDIR=$(echo $HOME)
+#     until test "$WORKDIR" = "$HOMEDIR"
+#     do
+#         if [ -e "$WORKDIR/.gvmrc" ]; then
+#             echo "detected .gvmrc file in $WORKDIR"
+#             # # load the gvmrc file and read the go.version property file
+#             source "$WORKDIR/.gvmrc"
+#             gvm use $go_version
+#             break
+#         fi
+#         # get the full path of the script
+#         WORKDIR=$(dirname $WORKDIR)
+#     done
+# }
 
-load.gvmrc() {
-    # detect if the current directory has a .gvmrc file
-  if [ -e .gvmrc ]; then
-    # load the gvmrc file and read the go.version property file
-    source .gvmrc
-    gvm use $go_version
-  fi
-}
+# load.gvmrc() {
+#     # detect if the current directory has a .gvmrc file
+#   if [ -e .gvmrc ]; then
+#     # load the gvmrc file and read the go.version property file
+#     source .gvmrc
+#     gvm use $go_version
+#   fi
+# }
 
-gvm.init()
-{
-    if [ -z "$1" ]
-    then
-        echo "go version not passed..."
-    else
-        echo "Go version passed is ....$1"
-        touch .gvmrc
-        echo "go_version=$1" > .gvmrc
-        # echo -e ".gvmrc created with contents ; " ; cat .gvmrc
-        load.gvmrc
-    fi
+# gvm.init()
+# {
+#     if [ -z "$1" ]
+#     then
+#         echo "go version not passed..."
+#     else
+#         echo "Go version passed is ....$1"
+#         touch .gvmrc
+#         echo "go_version=$1" > .gvmrc
+#         # echo -e ".gvmrc created with contents ; " ; cat .gvmrc
+#         load.gvmrc
+#     fi
     
-}
+# }
 
-list.go.versions()
-{
-    gvm list
-}
+# list.go.versions()
+# {
+#     gvm list
+# }
 # this helps us set golang version based on .gvmrc file when starting a new terminal/cmd session
 # recursively.find.gvmrc.and.load
+
+export PATH=$PATH:/Users/nilesh/Library/Python/3.9/bin
+
+
+## Poetry related
+eval "$(pyenv init --path)"
