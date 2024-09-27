@@ -341,6 +341,12 @@ alias docker.remove.all='docker rm $(docker ps -a -q)'
 
 export PATH=$PATH:/Users/nilesh/Library/Python/3.9/bin
 
+# Idea classpath
+export PATH=$PATH:/Applications/IntelliJ\ IDEA\ CE.app/Contents/MacOS
 
-## Poetry related
+## Python related
 eval "$(pyenv init --path)"
+export PATH=$HOME/.local/bin:$PATH
+
+## sets virtual env in the project working directory
+poetry config virtualenvs.in-project true
