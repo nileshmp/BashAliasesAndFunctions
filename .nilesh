@@ -152,6 +152,7 @@ export PYTHONPATH=/usr/local/bin/python3
 export PATH=/usr/local/opt/python@3.9/libexec/bin:$PATH
 
 # source "$HOME/.sdkman/bin/sdkman-init.sh"
+# sdk env init
 
 # terminal customisation
 parse_git_branch() {
@@ -358,4 +359,10 @@ export PATH=/Users/nilesh/work/softwares/kubernetes-ctl:$PATH
 export PATH=/Users/nilesh/work/softwares/helm/darwin-arm64:$PATH
 
 ## aws cli related
-export AWS_PROFILE=digit-quickstart-poc
+# export AWS_PROFILE=digit-quickstart-poc
+export AWS_PROFILE=piramal-dev-env
+
+## golang related
+export PATH=/Users/nilesh/work/softwares/go/go/bin:$PATH
+
+# export FPATH=/Users/nilesh/work/personal/auto-complete:$FPATH
