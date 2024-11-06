@@ -24,6 +24,10 @@ alias codebase.dir='cd $HOME_DIR/work/codebase'
 alias kafka.streams.dir='cd $HOME_DIR/work/codebase/kafka-streams'
 alias coding.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/coding-practice'
 alias design.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/design-practice'
+alias piramal.codebase.dir='cd $HOME_DIR/work/Piramal/codebase'
+alias codemagen.codebase.dir='cd $HOME_DIR/work/Aikyam/Codemagen/codebase'
+alias aikyam.codebase.dir='cd $HOME_DIR/work/Aikyam/codebase'
+alias docker.dir='cd $HOME_DIR/work/codebase/docker-images'
 
 ## dynamo on local box
 # DYNAMO_LOCAL_PATH=/Users/nileshmp/Simpl/dynamodb_local_latest
