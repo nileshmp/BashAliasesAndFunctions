@@ -10,12 +10,12 @@ export PATH=$MAVEN_HOME/bin:$PATH
 alias ll='ls -alh'
 alias edit='code'
 HOME_DIR=/Users/nilesh
-# alias rta.pipeline.dir='cd /Users/nileshmp/Simpl/codebase/RTA'
-# alias rta.service.dir='cd /Users/nileshmp/Simpl/codebase/RTAService'
-# alias rta.maas='cd /Users/nileshmp/Simpl/codebase/challenger_model/scm/microservices/rta-maas'
-# alias codebase.dir='cd /Users/nileshmp/Simpl/codebase'
-# alias load.test='cd /Users/nileshmp/Simpl/codebase/load-test'
-# alias flink.logs='cd /Users/nileshmp/Simpl/flink-logs'
+# alias rta.pipeline.dir='cd $HOME_DIR/Simpl/codebase/RTA'
+# alias rta.service.dir='cd $HOME_DIR/Simpl/codebase/RTAService'
+# alias rta.maas='cd $HOME_DIR/Simpl/codebase/challenger_model/scm/microservices/rta-maas'
+# alias codebase.dir='cd $HOME_DIR/Simpl/codebase'
+# alias load.test='cd $HOME_DIR/Simpl/codebase/load-test'
+# alias flink.logs='cd $HOME_DIR/Simpl/flink-logs'
 ## learning
 alias learning.dir='cd $HOME_DIR/work/personal/Learning'
 alias learning.notes.dir='cd $HOME_DIR/work/personal/LearningNotes'
@@ -25,17 +25,21 @@ alias kafka.streams.dir='cd $HOME_DIR/work/codebase/kafka-streams'
 alias coding.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/coding-practice'
 alias design.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/design-practice'
 alias piramal.codebase.dir='cd $HOME_DIR/work/Piramal/codebase'
-alias codemagen.codebase.dir='cd $HOME_DIR/work/Aikyam/Codemagen/codebase'
+alias sukrtya.dir='cd $HOME_DIR/work/Piramal/codebase/sukrtya'
+alias codemagen.codebase.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebase'
+alias hotel.service.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebase/hotel-service'
 alias aikyam.codebase.dir='cd $HOME_DIR/work/Aikyam/codebase'
-alias docker.dir='cd $HOME_DIR/work/codebase/docker-images'
+alias devops.dir='cd $HOME_DIR/work/codebase/devops'
+alias source.env.script='source $HOME_DIR/work/personal/BashAliasesAndFunctions/.nilesh'
+alias open.aws.cred='open $HOME_DIR/work/Piramal/documents/Piramal-Notion/Piramal\ Foundation\ 103fee2692bc808a87a3f5674946e7d7/AWS\ 12efee2692bc80f18046eb316b896d91.html'
 
 ## dynamo on local box
-# DYNAMO_LOCAL_PATH=/Users/nileshmp/Simpl/dynamodb_local_latest
+# DYNAMO_LOCAL_PATH=$HOME_DIR/Simpl/dynamodb_local_latest
 # alias dynamo.local='cd DYNAMO_LOCAL_PATH'
 # alias start.dynamo.local='cd $DYNAMO_LOCAL_PATH && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb'
-#alias golang.learning.dir='cd /Users/nileshmp/Simpl/codebase/golang/'
-#alias docker.images='cd /Users/nileshmp/Simpl/codebase/docker-images/'
-# # alias pigeon.dir='cd /Users/nileshmp/Simpl/codebase/pigeon'
+#alias golang.learning.dir='cd $HOME_DIR/Simpl/codebase/golang/'
+#alias docker.images='cd $HOME_DIR/Simpl/codebase/docker-images/'
+# # alias pigeon.dir='cd $HOME_DIR/Simpl/codebase/pigeon'
 
 # alias sshtodemaster='ssh 10.70.13.109'
 # alias sshtodeworker1='ssh 10.70.13.113'
@@ -66,10 +70,10 @@ alias docker.dir='cd $HOME_DIR/work/codebase/docker-images'
 
 # alias start.redis.server='redis-server'
 
-alias plantuml.dir='cd /Users/nileshmp/Simpl/plantUML-design-and-diagrams'
+alias plantuml.dir='cd $HOME_DIR/Simpl/plantUML-design-and-diagrams'
 
 # function copyflinklogsprod(){
-#     source_dir='/Users/nileshmp/Simpl/flink-logs/global-prod'
+#     source_dir='$HOME_DIR/Simpl/flink-logs/global-prod'
 #     # create a directory with todays date
 #     # today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
 #     echo $source_dir
@@ -84,7 +88,7 @@ alias plantuml.dir='cd /Users/nileshmp/Simpl/plantUML-design-and-diagrams'
 # }
 
 # function copyflinklogsdeprod(){
-#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-prod'
+#     source_dir='$HOME_DIR/Simpl/flink-logs/de-prod'
 #     # create a directory with todays date
 #     today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
 #     echo $today
@@ -101,7 +105,7 @@ alias plantuml.dir='cd /Users/nileshmp/Simpl/plantUML-design-and-diagrams'
 # }
 
 # function copyflinklogsdeprod(){
-#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-prod'
+#     source_dir='$HOME_DIR/Simpl/flink-logs/de-prod'
 #     # create a directory with todays date
 #     # today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
 #     echo $source_dir
@@ -118,7 +122,7 @@ alias plantuml.dir='cd /Users/nileshmp/Simpl/plantUML-design-and-diagrams'
 # }
 
 # function copyflinklogsdevalidationprod(){
-#     source_dir='/Users/nileshmp/Simpl/flink-logs/de-validation-prod'
+#     source_dir='$HOME_DIR/Simpl/flink-logs/de-validation-prod'
 #     # create a directory with todays date
 #     today=$source_dir/$(date +%d:%m:%Y-%H:%M:%S)
 #     echo $today
@@ -183,7 +187,7 @@ export ENV=dev
 
 # python virtual environment
 function use.virtual.environment.python(){
-    source /Users/nileshmp/Simpl/codebase/etl-pipes/venv/bin/activate 
+    source $HOME_DIR/Simpl/codebase/etl-pipes/venv/bin/activate 
 }
 
 ## git related
@@ -245,7 +249,7 @@ function unloadenv()
 # fi
 
 #  kafka related
-KAFKA_HOME=/Users/nileshmp/Simpl/kafka/kafka_2.13-3.0.0
+KAFKA_HOME=$HOME_DIR/Simpl/kafka/kafka_2.13-3.0.0
 export PATH=$KAFKA_HOME/bin:$PATH
 alias kafka.dir='cd $KAFKA_HOME'
 ## Kafka virtualisation (Docker)
@@ -259,7 +263,7 @@ export PATH=$PATH:/usr/local/sbin:/usr/local/bin
 alias rtclr.dir='cd ~/Simpl/codebase/RTCLR'
 
 # Golang related
-# source /Users/nileshmp/.gvm/scripts/gvm
+# source $HOME_DIR/.gvm/scripts/gvm
 # gvm use go1.18
 
 function show.fmt.files()
@@ -370,3 +374,6 @@ export AWS_PROFILE=piramal-dev-env
 export PATH=/Users/nilesh/work/softwares/go/go/bin:$PATH
 
 # export FPATH=/Users/nilesh/work/personal/auto-complete:$FPATH
+
+## list aliasses followed by functions and commands
+zstyle ':completion:*:*:-command-:*' group-order aliases functions commands
