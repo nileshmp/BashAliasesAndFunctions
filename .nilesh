@@ -415,3 +415,7 @@ function clean.orbstack()
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
+
+source $HOME/openvpn/connect-piramal-vpn.sh
+
+docker context use orbstack
