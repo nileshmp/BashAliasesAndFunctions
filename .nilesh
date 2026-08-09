@@ -1,7 +1,7 @@
 USER_DIR=/Users/nilesh
 
-## custome functions realted to path of this file
-alias print-nilesh-path='echo ~/work/personal/BashAliasesAndFunctions/.nilesh'
+CUSTOM_SCRIPT_DIR=$USER_DIR/work/personal/BashAliasesAndFunctions
+
 ## Maven related settings
 MAVEN_HOME=$USER_DIR/work/softwares/apache-maven-3.9.7
 export PATH=$MAVEN_HOME/bin:$PATH
@@ -27,10 +27,11 @@ alias codemagen.codebase.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebas
 alias hotel.service.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebase/hotel-service'
 alias aikyam.codebase.dir='cd $HOME_DIR/work/Aikyam/codebase'
 alias devops.dir='cd $HOME_DIR/work/codebase/devops'
-alias source.env.script='source $HOME_DIR/work/personal/BashAliasesAndFunctions/.nilesh'
-alias show.nilesh.script.loc='echo $HOME_DIR/work/personal/BashAliasesAndFunctions/.nilesh'
+alias source.env.script='source $CUSTOM_SCRIPT_DIR/.nilesh'
+alias show.nilesh.script.loc='echo $CUSTOM_SCRIPT_DIR/.nilesh'
+alias list.alias.func="grep -E 'alias|function' $CUSTOM_SCRIPT_DIR/.nilesh"
 alias open.aws.cred='open $PIRAMAL_HOME/documents/Piramal-Notion/Piramal\ Foundation\ 103fee2692bc808a87a3f5674946e7d7/AWS\ 12efee2692bc80f18046eb316b896d91.html'
-alias list.alias.func="grep -E 'alias|function' $HOME_DIR/work/personal/BashAliasesAndFunctions/.nilesh"
+
 alias qurve.ai.dir='cd $HOME_DIR/work/qurve.ai'
 alias udhyam.dir='cd $HOME_DIR/work/Aikyam/clients/Udhyam'
 
@@ -215,9 +216,6 @@ export PATH=/Users/nilesh/work/softwares/go/go/bin:$PATH
 
 # export FPATH=/Users/nilesh/work/personal/auto-complete:$FPATH
 
-## list aliasses followed by functions and commands
-zstyle ':completion:*:*:-command-:*' group-order aliases functions commands
-
 function clean.orbstack()
 {
     # Ensure you're using the right version of OrbStack
@@ -243,11 +241,20 @@ function clean.orbstack()
     echo "Cleanup complete!"
 }
 
+
+
 # loading pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
 
+# sourcing external scripts
 source $HOME/openvpn/connect-piramal-vpn.sh
+source $CUSTOM_SCRIPT_DIR/.service_manager
 
 docker context use orbstack
+
+show.nilesh.script.loc
+
+## list aliasses followed by functions and commands
+zstyle ':completion:*:*:-command-:*' group-order aliases functions commands

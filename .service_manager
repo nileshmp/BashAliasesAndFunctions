@@ -1,0 +1,137 @@
+
+# 1) Declare your apps once, as name -> "full_directory:invocation".
+#    Directories don't need to share a common parent.
+typeset -A APP_MAP=(
+    takshashila   "$HOME_DIR/work/project-takshashila:start.sh"
+    invoice    "$HOME_DIR/work/Aikyam/codebase/invoicekit:start.sh"
+    # my-service    "$HOME_DIR/work/Aikyam/codebase/invoicekit:npm run dev"
+    # add more here: name  "dir:command"
+)
+
+APP_RUN_DIR="${APP_RUN_DIR:-$HOME/.local/state/app-launcher}"
+mkdir -p "$APP_RUN_DIR" 2>/dev/null
+
+# resolve "name" via APP_MAP, or accept an ad-hoc "dir:command" spec directly
+function _app.resolve()
+{
+    local key="$1"
+    if [[ -n "${APP_MAP[$key]}" ]]; then
+        echo "$key|${APP_MAP[$key]}"
+    elif [[ "$key" == *:* ]]; then
+        # ad-hoc spec: use the last path component as the tracking name
+        local dir="${key%%:*}"
+        echo "$(basename "$dir")|$key"
+    else
+        return 1
+    fi
+}
+
+function app.start()
+{
+    local resolved
+    resolved="$(_app.resolve "$1")" || { echo "Unknown app '$1'. Known: ${(k)APP_MAP}"; return 1; }
+
+    local name="${resolved%%|*}"
+    local spec="${resolved#*|}"
+    local dir="${spec%%:*}"
+    local cmd="${spec#*:}"
+    local pidfile="$APP_RUN_DIR/$name.pid"
+    local logfile="$APP_RUN_DIR/$name.log"
+
+    if [[ ! -d "$dir" ]]; then
+        echo "Directory not found: $dir"
+        return 1
+    fi
+
+    if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+        echo "$name already running (PID $(cat "$pidfile"))."
+        return 1
+    fi
+
+    # allow "start.sh" as shorthand for "./start.sh" if it's an executable file in dir
+    local first_word="${cmd%% *}"
+    if [[ -f "$dir/$first_word" && -x "$dir/$first_word" && "$first_word" != /* && "$first_word" != ./* ]]; then
+        cmd="./$cmd"
+    fi
+
+    echo "Starting $name..."
+    ( cd "$dir" && eval "nohup $cmd > \"$logfile\" 2>&1 &" && echo $! > "$pidfile" )
+    echo "Started $name (PID $(cat "$pidfile")). Logs: $logfile"
+}
+
+function app.stop()
+{
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        echo "Usage: app.stop <name>"
+        return 1
+    fi
+
+    local pidfile="$APP_RUN_DIR/$name.pid"
+    if [[ ! -f "$pidfile" ]]; then
+        echo "No PID file found for $name — is it running?"
+        return 1
+    fi
+
+    local pid=$(cat "$pidfile")
+    if kill -0 "$pid" 2>/dev/null; then
+        kill "$pid"
+        rm "$pidfile"
+        echo "Stopped $name (PID $pid)."
+    else
+        echo "Stale PID file for $name (process $pid not running). Removing."
+        rm "$pidfile"
+    fi
+}
+
+function app.log()
+{
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        echo "Usage: app.log <name>"
+        return 1
+    fi
+    tail -f "$APP_RUN_DIR/$name.log"
+}
+
+function app.list()
+{
+    for k in "${(@k)APP_MAP}"; do
+        echo "$k -> ${APP_MAP[$k]}"
+    done
+}
+
+function app.stop.all()
+{
+    for name in "${(@k)APP_MAP}"; do
+        local pidfile="$APP_RUN_DIR/$name.pid"
+        if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+            app.stop "$name"
+        fi
+    done
+}
+
+function app.status()
+{
+    local name="$1"
+
+    if [[ -z "$name" ]]; then
+        for n in "${(@k)APP_MAP}"; do
+            local pidfile="$APP_RUN_DIR/$n.pid"
+            if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+                echo "$n: running (PID $(cat "$pidfile"))"
+            else
+                echo "$n: stopped"
+            fi
+        done
+        return
+    fi
+
+    local pidfile="$APP_RUN_DIR/$name.pid"
+    if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+        echo "$name: running (PID $(cat "$pidfile"))"
+    else
+        echo "$name: stopped"
+    fi
+}
+# -----------------------------------------------------------------------
