@@ -1,29 +1,118 @@
 
-# 1) Declare your apps once, as name -> "full_directory:invocation".
+# 1) Declare your apps once, as name -> "full_directory:invocation[:ports]".
 #    Directories don't need to share a common parent.
+#    ports (optional) is a comma-separated list of TCP ports the app listens
+#    on, e.g. "3001,5173" for an API + Vite dev server. When set, app.start/
+#    app.status/app.stop resolve the *actual* listening PID via lsof instead
+#    of trusting the launcher's PID alone — needed because wrappers like
+#    "npm run dev" / "npx vite" fork a child that binds the port, and that
+#    child can end up orphaned (reparented to PID 1) if the wrapper exits
+#    early, which severs any parent/child based tracking. As a fallback (and
+#    for apps with no configured port) app.stop also kills the launcher's
+#    whole process group, which survives that kind of orphaning.
 typeset -A APP_MAP=(
-    takshashila   "$HOME_DIR/work/project-takshashila:start.sh"
-    invoice    "$HOME_DIR/work/Aikyam/codebase/invoicekit:start.sh"
-    # my-service    "$HOME_DIR/work/Aikyam/codebase/invoicekit:npm run dev"
-    # add more here: name  "dir:command"
+    takshashila   "$HOME_DIR/work/project-takshashila:start.sh:3001,5173"
+    invoice    "$HOME_DIR/work/Aikyam/codebase/invoicekit:start.sh:3000"
+    # my-service    "$HOME_DIR/work/Aikyam/codebase/invoicekit:npm run dev:5173"
+    # add more here: name  "dir:command[:ports]"
 )
 
 APP_RUN_DIR="${APP_RUN_DIR:-$HOME/.local/state/app-launcher}"
 mkdir -p "$APP_RUN_DIR" 2>/dev/null
 
-# resolve "name" via APP_MAP, or accept an ad-hoc "dir:command" spec directly
+# split a comma-separated list into words, one per line. Guards the zsh
+# gotcha where splitting an empty string yields one empty element instead
+# of zero.
+function _app.csv()
+{
+    [[ -z "$1" ]] && return
+    print -l -- "${(@s:,:)1}"
+}
+
+# PIDs currently LISTENing on any port in a comma-separated list (may print
+# nothing if $1 is empty or nothing is bound yet)
+function _app.port_pids()
+{
+    local p pid
+    for p in $(_app.csv "$1"); do
+        pid="$(lsof -t -i ":$p" -sTCP:LISTEN 2>/dev/null)"
+        [[ -n "$pid" ]] && echo "$pid"
+    done
+}
+
+# every PID sharing a process group id (may print nothing)
+function _app.group_pids()
+{
+    [[ -z "$1" ]] && return
+    pgrep -g "$1" 2>/dev/null
+}
+
+# true (0) if the app is running. Judged by its ports when it has any —
+# that's ground truth regardless of how the process tree forked — else by
+# the launcher PID recorded at start. $2, if given, overrides the ports
+# lookup (used by app.start, which knows the freshly-resolved ports before
+# any pidfile/portfile for this run exists).
+function _app.is_running()
+{
+    local name="$1"
+    local ports="${2:-$(cat "$APP_RUN_DIR/$name.ports" 2>/dev/null)}"
+    if [[ -n "$ports" ]]; then
+        local p
+        for p in $(_app.csv "$ports"); do
+            [[ -n "$(lsof -t -i ":$p" -sTCP:LISTEN 2>/dev/null)" ]] && return 0
+        done
+        return 1
+    fi
+    local pidfile="$APP_RUN_DIR/$name.pid"
+    [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null
+}
+
+# human-readable "what's running" description for an app already known to
+# be up (same $2 override as _app.is_running)
+function _app.running_desc()
+{
+    local name="$1"
+    local ports="${2:-$(cat "$APP_RUN_DIR/$name.ports" 2>/dev/null)}"
+    if [[ -n "$ports" ]]; then
+        local p pid
+        local -a parts=()
+        for p in $(_app.csv "$ports"); do
+            pid="$(lsof -t -i ":$p" -sTCP:LISTEN 2>/dev/null | head -1)"
+            parts+=("$p→${pid:-down}")
+        done
+        echo "ports ${(j:, :)parts}"
+        return
+    fi
+    echo "PID $(cat "$APP_RUN_DIR/$name.pid" 2>/dev/null)"
+}
+
+# resolve "name" via APP_MAP, or accept an ad-hoc "dir:command[:ports]" spec
+# directly. Echoes "name|dir|cmd|ports" (ports may be empty).
 function _app.resolve()
 {
-    local key="$1"
+    local key="$1" name spec
     if [[ -n "${APP_MAP[$key]}" ]]; then
-        echo "$key|${APP_MAP[$key]}"
+        name="$key"
+        spec="${APP_MAP[$key]}"
     elif [[ "$key" == *:* ]]; then
-        # ad-hoc spec: use the last path component as the tracking name
         local dir="${key%%:*}"
-        echo "$(basename "$dir")|$key"
+        name="$(basename "$dir")"
+        spec="$key"
     else
         return 1
     fi
+
+    local dir="${spec%%:*}"
+    local rest="${spec#*:}"
+    local cmd="$rest" ports=""
+    if [[ "$rest" == *:* ]]; then
+        local maybe_ports="${rest##*:}"
+        if [[ "$maybe_ports" =~ ^[0-9]+(,[0-9]+)*$ ]]; then
+            ports="$maybe_ports"
+            cmd="${rest%:*}"
+        fi
+    fi
+    echo "$name|$dir|$cmd|$ports"
 }
 
 function app.start()
@@ -31,11 +120,12 @@ function app.start()
     local resolved
     resolved="$(_app.resolve "$1")" || { echo "Unknown app '$1'. Known: ${(k)APP_MAP}"; return 1; }
 
-    local name="${resolved%%|*}"
-    local spec="${resolved#*|}"
-    local dir="${spec%%:*}"
-    local cmd="${spec#*:}"
+    local name dir cmd ports
+    IFS='|' read -r name dir cmd ports <<< "$resolved"
+
     local pidfile="$APP_RUN_DIR/$name.pid"
+    local pgidfile="$APP_RUN_DIR/$name.pgid"
+    local portfile="$APP_RUN_DIR/$name.ports"
     local logfile="$APP_RUN_DIR/$name.log"
 
     if [[ ! -d "$dir" ]]; then
@@ -43,8 +133,8 @@ function app.start()
         return 1
     fi
 
-    if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-        echo "$name already running (PID $(cat "$pidfile"))."
+    if _app.is_running "$name" "$ports"; then
+        echo "$name already running ($(_app.running_desc "$name" "$ports"))."
         return 1
     fi
 
@@ -56,7 +146,33 @@ function app.start()
 
     echo "Starting $name..."
     ( cd "$dir" && eval "nohup $cmd > \"$logfile\" 2>&1 &" && echo $! > "$pidfile" )
-    echo "Started $name (PID $(cat "$pidfile")). Logs: $logfile"
+    local pid="$(cat "$pidfile" 2>/dev/null)"
+    [[ -n "$pid" ]] && ps -o pgid= -p "$pid" 2>/dev/null | tr -d ' ' > "$pgidfile"
+    echo "$ports" > "$portfile"
+
+    if [[ -z "$ports" ]]; then
+        echo "Started $name (launcher PID $pid). Logs: $logfile"
+        return
+    fi
+
+    echo "Waiting for $name to bind port(s) $ports..."
+    local tries=20 p listen_pid
+    local -a pending
+    while (( tries-- > 0 )); do
+        pending=()
+        for p in $(_app.csv "$ports"); do
+            listen_pid="$(lsof -t -i ":$p" -sTCP:LISTEN 2>/dev/null | head -1)"
+            [[ -z "$listen_pid" ]] && pending+=("$p")
+        done
+        (( ${#pending} == 0 )) && break
+        sleep 0.3
+    done
+
+    if (( ${#pending} )); then
+        echo "Started $name (launcher PID $pid), but port(s) ${(j:,:)pending} haven't come up yet — check $logfile."
+    else
+        echo "Started $name. $(_app.running_desc "$name" "$ports")"
+    fi
 }
 
 function app.stop()
@@ -68,20 +184,50 @@ function app.stop()
     fi
 
     local pidfile="$APP_RUN_DIR/$name.pid"
-    if [[ ! -f "$pidfile" ]]; then
+    local pgidfile="$APP_RUN_DIR/$name.pgid"
+    local portfile="$APP_RUN_DIR/$name.ports"
+
+    if ! _app.is_running "$name" && [[ ! -f "$pidfile" ]]; then
         echo "No PID file found for $name — is it running?"
         return 1
     fi
 
-    local pid=$(cat "$pidfile")
-    if kill -0 "$pid" 2>/dev/null; then
-        kill "$pid"
-        rm "$pidfile"
-        echo "Stopped $name (PID $pid)."
-    else
-        echo "Stale PID file for $name (process $pid not running). Removing."
-        rm "$pidfile"
+    local pid="$(cat "$pidfile" 2>/dev/null)"
+    local pgid="$(cat "$pgidfile" 2>/dev/null)"
+    local ports="$(cat "$portfile" 2>/dev/null)"
+
+    # union of: the recorded launcher PID, everything in its process group,
+    # and whatever currently owns the configured ports — covers stragglers
+    # that got detached/orphaned out of the group (e.g. via npm/npx).
+    local -A seen
+    local -a targets=()
+    local x
+    for x in "$pid" $(_app.group_pids "$pgid") $(_app.port_pids "$ports"); do
+        [[ -z "$x" || -n "${seen[$x]:-}" ]] && continue
+        seen[$x]=1
+        targets+=("$x")
+    done
+
+    if (( ${#targets} == 0 )); then
+        echo "Stale state for $name (nothing running). Removing pidfiles."
+        rm -f "$pidfile" "$pgidfile" "$portfile"
+        return 1
     fi
+
+    kill -TERM "${targets[@]}" 2>/dev/null
+    sleep 1
+
+    local -a survivors=()
+    for x in "${targets[@]}"; do
+        kill -0 "$x" 2>/dev/null && survivors+=("$x")
+    done
+    local -a still_on_port=($(_app.port_pids "$ports"))
+    (( ${#still_on_port} )) && survivors+=("${still_on_port[@]}")
+
+    (( ${#survivors} )) && kill -KILL "${survivors[@]}" 2>/dev/null
+
+    rm -f "$pidfile" "$pgidfile" "$portfile"
+    echo "Stopped $name (${#targets} process(es): ${targets[*]})."
 }
 
 function app.log()
@@ -104,10 +250,7 @@ function app.list()
 function app.stop.all()
 {
     for name in "${(@k)APP_MAP}"; do
-        local pidfile="$APP_RUN_DIR/$name.pid"
-        if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-            app.stop "$name"
-        fi
+        _app.is_running "$name" && app.stop "$name"
     done
 }
 
@@ -117,9 +260,8 @@ function app.status()
 
     if [[ -z "$name" ]]; then
         for n in "${(@k)APP_MAP}"; do
-            local pidfile="$APP_RUN_DIR/$n.pid"
-            if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-                echo "$n: running (PID $(cat "$pidfile"))"
+            if _app.is_running "$n"; then
+                echo "$n: running ($(_app.running_desc "$n"))"
             else
                 echo "$n: stopped"
             fi
@@ -127,9 +269,8 @@ function app.status()
         return
     fi
 
-    local pidfile="$APP_RUN_DIR/$name.pid"
-    if [[ -f "$pidfile" ]] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-        echo "$name: running (PID $(cat "$pidfile"))"
+    if _app.is_running "$name"; then
+        echo "$name: running ($(_app.running_desc "$name"))"
     else
         echo "$name: stopped"
     fi

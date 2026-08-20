@@ -1,0 +1,9 @@
+{
+  "parser": {
+    "mappings": {
+      ".service_manager": "bash",
+      ".nilesh": "bash"
+    },
+    "excludeHidden": false
+  }
+}
