@@ -3,5 +3,10 @@
     "mtime": 1787214381.4843707,
     "ast_hash": "1c90f04a03191621996ac71e2262f31b",
     "semantic_hash": ""
+  },
+  ".claude/settings.local.json": {
+    "mtime": 1787216669.3828769,
+    "ast_hash": "d4126fd6718db0005d5f212aa61e22ed",
+    "semantic_hash": ""
   }
 }

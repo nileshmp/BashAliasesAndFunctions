@@ -1,20 +1,197 @@
 # --- Pi Customization Helper Functions ---
 
+# --- Section 1: Provider & Encryption Management ---
+
+_pi_get_password() {
+    # Securely prompts for and returns a password.
+    # $1: The prompt string to display to the user.
+    # $2 (optional): If set to "confirm", will prompt for confirmation.
+    local prompt_text="$1"
+    local confirmation_required="$2"
+    local password=""
+    local password_confirm=""
+
+    while true; do
+        read -s "password?$prompt_text"
+        echo
+        if [[ "$confirmation_required" == "confirm" ]]; then
+            read -s "password_confirm?Confirm password: "
+            echo
+            if [[ "$password" == "$password_confirm" ]]; then
+                break
+            else
+                echo "Passwords do not match. Please try again."
+            fi
+        else
+            break
+        fi
+    done
+    REPLY=$password
+}
+
+_pi_encrypt_providers() {
+    # Encrypts provider data and saves it to the file.
+    # $1: The plaintext provider data.
+    # $2: The password.
+    local providers_plaintext="$1"
+    local password="$2"
+    local provider_file=".pi_providers.enc"
+    
+    echo "$providers_plaintext" | openssl enc -aes-256-cbc -pass pass:"$password" -pbkdf2 -out "$provider_file"
+    # Ensure file permissions are restrictive
+    chmod 600 "$provider_file"
+}
+
+_pi_decrypt_providers() {
+    # Decrypts the provider file and returns the plaintext.
+    # $1: The password.
+    # Returns 0 on success, 1 on failure.
+    local password="$1"
+    local provider_file=".pi_providers.enc"
+    
+    # openssl will return a non-zero exit code for bad passwords/decryption failure.
+    openssl enc -d -aes-256-cbc -pass pass:"$password" -pbkdf2 -in "$provider_file" 2>/dev/null
+}
+
+_pi_add_new_provider() {
+    # Interactively adds a new provider and key.
+    # $1 (optional): The existing provider plaintext.
+    # Returns the updated provider plaintext.
+    local providers_plaintext="$1"
+    local new_provider=""
+    local new_key=""
+
+    echo -n "Enter provider name (e.g., openai, google): "
+    read new_provider
+    echo -n "Enter API key for '$new_provider': "
+    read -s new_key
+    echo
+
+    if [[ -z "$new_provider" || -z "$new_key" ]]; then
+        echo "Provider name and key cannot be empty."
+        REPLY=$providers_plaintext
+        return 1
+    fi
+    
+    local new_entry="${new_provider}=${new_key}"
+    if [[ -n "$providers_plaintext" ]]; then
+        REPLY="${providers_plaintext}\n${new_entry}"
+    else
+        REPLY="$new_entry"
+    fi
+}
+
+_pi_provider_menu() {
+    # Displays the interactive menu to select a provider.
+    # $1: The decrypted provider plaintext.
+    # Sets `selected_provider` and `selected_key` in the parent scope.
+    local providers_plaintext="$1"
+    local -a providers
+    local -A provider_keys
+
+    # Read the plaintext into an array and an associative array for easy lookup
+    while IFS='=' read -r key value; do
+        if [[ -n "$key" ]]; then
+            providers+=("$key")
+            provider_keys[$key]="$value"
+        fi
+    done <<< "$providers_plaintext"
+
+    echo "Select a provider for this session:"
+    local i=1
+    for p in "${providers[@]}"; do
+        echo "$i) $p"
+        ((i++))
+    done
+    echo "---------------------"
+    echo "$i) [Add a new provider]"
+    ((i++))
+    echo "$i) [Continue without a provider]"
+
+    echo -n "Enter your choice: "
+    read choice
+
+    if [[ "$choice" -gt 0 && "$choice" -le "${#providers[@]}" ]]; then
+        # A provider was selected
+        selected_provider="${providers[$((choice-1))]}"
+        selected_key="${provider_keys[$selected_provider]}"
+    elif [[ "$choice" -eq $((${#providers[@]} + 1)) ]]; then
+        # Add new provider
+        REPLY="add_new"
+    else
+        # Continue without, or invalid choice
+        REPLY="continue_without"
+    fi
+}
+
+_pi_handle_providers() {
+    # Main orchestrator for the provider management feature.
+    # Sets `provider_args` in the parent scope if a provider is chosen.
+    local provider_file=".pi_providers.enc"
+    local password=""
+    
+    if [ ! -f "$provider_file" ]; then
+        # Workflow A: First-time initialization
+        echo -n "No provider file found. Create one? [Y/n] "
+        read create_choice
+        if [[ "$create_choice" != "n" && "$create_choice" != "N" ]]; then
+            _pi_get_password "Enter new password for this project: " "confirm"
+            password=$REPLY
+            _pi_add_new_provider ""
+            local new_providers=$REPLY
+            _pi_encrypt_providers "$new_providers" "$password"
+            
+            # Set the provider for the current session
+            selected_provider="${new_providers%%=*}"
+            selected_key="${new_providers#*=}"
+        fi
+    else
+        # Workflow B: Standard execution
+        _pi_get_password "Enter provider password for this project: "
+        password=$REPLY
+        
+        local providers_plaintext=$(_pi_decrypt_providers "$password")
+        if [[ -z "$providers_plaintext" ]]; then
+            echo "Decryption failed. Invalid password."
+            return 1 # Abort
+        fi
+
+        _pi_provider_menu "$providers_plaintext"
+        local menu_result=$REPLY
+        
+        if [[ "$menu_result" == "add_new" ]]; then
+            _pi_add_new_provider "$providers_plaintext"
+            local updated_providers=$REPLY
+            _pi_encrypt_providers "$updated_providers" "$password"
+            echo "Provider added successfully."
+            # For now, we just exit. The user can re-run to select the new provider.
+            return 1 # Simple approach: end here.
+        fi
+    fi
+    
+    # If a provider was selected (either on init or from menu), set the args.
+    if [[ -n "$selected_provider" && -n "$selected_key" ]]; then
+        provider_args=("--provider" "$selected_provider" "--api-key" "$selected_key")
+        echo "Using provider: $selected_provider"
+    fi
+    
+    return 0
+}
+
+
+# --- Section 2: Session Recording & Management ---
+
 _pi_sanitize_filename() {
-    # Takes a string and cleans it for use as a filename.
-    # $1: The raw name string.
     echo "$1" | sed -e 's/[^a-zA-Z0-9._]/-/g' -e 's/--\+/-/g' -e 's/^-//' -e 's/-$//'
 }
 
 _pi_parse_args() {
-    # Intercepts --name and removes it from pi_args, storing its value
-    # in the custom_session_name variable from the parent scope.
     local temp_args=()
     for ((i = 0; i < ${#pi_args[@]}; i++)); do
         if [[ "${pi_args[i]}" == "--name" ]]; then
             if [[ -n "${pi_args[i+1]}" ]]; then
                 custom_session_name="${pi_args[i+1]}"
-                ((i++)) # Skip the name value.
+                ((i++))
             else
                 echo "Warning: --name flag provided without a value. Ignoring."
             fi
@@ -26,10 +203,6 @@ _pi_parse_args() {
 }
 
 _pi_handle_resume() {
-    # Manages the interactive session resumption flow.
-    # Returns 0 on success, 1 on failure.
-    # On success, it sets the `target_log_file` and re-writes `pi_args`
-    # in the parent scope.
     if [[ "${#pi_args[@]}" -gt 1 ]]; then
         echo "Error: --resume cannot be used with other arguments."
         return 1
@@ -62,14 +235,12 @@ _pi_handle_resume() {
 }
 
 _pi_run_resumed_session() {
-    # Runs the 'script' command in append mode for a resumed session.
     echo "New activity will be appended to $(basename "$target_log_file")."
     script -q -a "$target_log_file" command pi "${pi_args[@]}"
     echo "Pi session ended. Log updated in $(basename "$target_log_file")"
 }
 
 _pi_run_new_session() {
-    # Manages the entire lifecycle of a new session recording.
     local temp_log_file="$SESSIONS_DIR/.session_inprogress_$$.tmp"
 
     trap '
@@ -83,7 +254,7 @@ _pi_run_new_session() {
     echo "Starting new Pi session..."
     script -q "$temp_log_file" command pi "${pi_args[@]}"
 
-    trap - EXIT # Disarm the trap on normal completion.
+    trap - EXIT
 
     local final_name=""
     if [[ -n "$custom_session_name" ]]; then
@@ -107,28 +278,35 @@ _pi_run_new_session() {
 
 pi() {
     # --- Main Entry Point & Orchestrator ---
-    # Defines shared local variables and calls helper functions
-    # to manage session recording, naming, and resumption.
-
     local SESSIONS_DIR="./.pi_sessions"
     mkdir -p "$SESSIONS_DIR"
 
-    # These variables act as shared state for the helper functions.
+    # Shared state variables
     local pi_args=("$@")
     local custom_session_name=""
     local target_log_file=""
+    local provider_args=()
+    local selected_provider="" # Used by provider helpers
+    local selected_key=""      # Used by provider helpers
 
-    # 1. Route to the correct flow: resume or new.
-    # The --resume flag must be the first argument.
+    # --- 1. Handle Provider Selection ---
+    # This must run first to configure credentials for the session.
+    # It modifies `provider_args` which is then prepended to `pi_args`.
+    if ! _pi_handle_providers; then
+        return 1 # Abort if provider handling fails (e.g., bad password).
+    fi
+    
+    # Prepend any provider args to the main arguments list.
+    pi_args=("${provider_args[@]}" "${pi_args[@]}")
+
+    # --- 2. Route to Session Management Flow ---
     if [[ "$1" == "--resume" ]]; then
         if _pi_handle_resume; then
-            # Prepend system prompt *after* getting content from the resumed file.
             pi_args=("--append-system-prompt" "$HOME/.pi/session_rules.md" "${pi_args[@]}")
             _pi_run_resumed_session
         fi
     else
-        # This is a new session.
-        _pi_parse_args # Modifies pi_args and sets custom_session_name.
+        _pi_parse_args
         pi_args=("--append-system-prompt" "$HOME/.pi/session_rules.md" "${pi_args[@]}")
         _pi_run_new_session
     fi
