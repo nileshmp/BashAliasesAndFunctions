@@ -1,0 +1,135 @@
+# --- Pi Customization Helper Functions ---
+
+_pi_sanitize_filename() {
+    # Takes a string and cleans it for use as a filename.
+    # $1: The raw name string.
+    echo "$1" | sed -e 's/[^a-zA-Z0-9._]/-/g' -e 's/--\+/-/g' -e 's/^-//' -e 's/-$//'
+}
+
+_pi_parse_args() {
+    # Intercepts --name and removes it from pi_args, storing its value
+    # in the custom_session_name variable from the parent scope.
+    local temp_args=()
+    for ((i = 0; i < ${#pi_args[@]}; i++)); do
+        if [[ "${pi_args[i]}" == "--name" ]]; then
+            if [[ -n "${pi_args[i+1]}" ]]; then
+                custom_session_name="${pi_args[i+1]}"
+                ((i++)) # Skip the name value.
+            else
+                echo "Warning: --name flag provided without a value. Ignoring."
+            fi
+        else
+            temp_args+=("${pi_args[i]}")
+        fi
+    done
+    pi_args=("${temp_args[@]}")
+}
+
+_pi_handle_resume() {
+    # Manages the interactive session resumption flow.
+    # Returns 0 on success, 1 on failure.
+    # On success, it sets the `target_log_file` and re-writes `pi_args`
+    # in the parent scope.
+    if [[ "${#pi_args[@]}" -gt 1 ]]; then
+        echo "Error: --resume cannot be used with other arguments."
+        return 1
+    fi
+
+    local session_files=($(ls -1t "$SESSIONS_DIR"/*.log 2>/dev/null | xargs -n 1 basename))
+    if [ ${#session_files[@]} -eq 0 ]; then
+        echo "No Pi sessions found to resume."
+        return 1
+    fi
+
+    echo "Available Pi Sessions to resume (most recent first):"
+    echo "---------------------------------------------------------"
+    ls -1t "$SESSIONS_DIR"/*.log 2>/dev/null | xargs -n 1 basename | cat -n
+    echo "---------------------------------------------------------"
+
+    echo -n "Enter the number of the session to resume (or press Enter for the latest): "
+    read session_num
+    session_num=${session_num:-1}
+
+    if ! [[ "$session_num" =~ ^[0-9]+$ ]] || [ "$session_num" -eq 0 ] || [ "$session_num" -gt "${#session_files[@]}" ]; then
+        echo "Invalid session number. Aborting."
+        return 1
+    fi
+
+    target_log_file="${SESSIONS_DIR}/${session_files[$((session_num - 1))]}"
+    echo "Resuming session from $(basename "$target_log_file")..."
+    pi_args=("--" "$(cat "$target_log_file")")
+    return 0
+}
+
+_pi_run_resumed_session() {
+    # Runs the 'script' command in append mode for a resumed session.
+    echo "New activity will be appended to $(basename "$target_log_file")."
+    script -q -a "$target_log_file" command pi "${pi_args[@]}"
+    echo "Pi session ended. Log updated in $(basename "$target_log_file")"
+}
+
+_pi_run_new_session() {
+    # Manages the entire lifecycle of a new session recording.
+    local temp_log_file="$SESSIONS_DIR/.session_inprogress_$$.tmp"
+
+    trap '
+        if [ -f "'"$temp_log_file"'" ]; then
+            local final_name="$SESSIONS_DIR/$(date +"%Y-%m-%d_%H-%M-%S")_INCOMPLETE.log"
+            mv "'"$temp_log_file"'" "$final_name"
+            echo -e "\nPi session terminated unexpectedly. Partial log saved to $final_name"
+        fi
+    ' EXIT
+
+    echo "Starting new Pi session..."
+    script -q "$temp_log_file" command pi "${pi_args[@]}"
+
+    trap - EXIT # Disarm the trap on normal completion.
+
+    local final_name=""
+    if [[ -n "$custom_session_name" ]]; then
+        final_name="$custom_session_name"
+    else
+        echo -n "Enter a name for this session (optional, press Enter for timestamp): "
+        read session_name_input
+        if [[ -n "$session_name_input" ]]; then
+            final_name="$session_name_input"
+        else
+            final_name="$(date +"%Y-%m-%d_%H-%M-%S")"
+        fi
+    fi
+
+    local sanitized_name=$(_pi_sanitize_filename "$final_name")
+    local final_log_file="$SESSIONS_DIR/${sanitized_name}.log"
+
+    mv "$temp_log_file" "$final_log_file"
+    echo "Pi session ended. Log saved to $final_log_file"
+}
+
+pi() {
+    # --- Main Entry Point & Orchestrator ---
+    # Defines shared local variables and calls helper functions
+    # to manage session recording, naming, and resumption.
+
+    local SESSIONS_DIR="./.pi_sessions"
+    mkdir -p "$SESSIONS_DIR"
+
+    # These variables act as shared state for the helper functions.
+    local pi_args=("$@")
+    local custom_session_name=""
+    local target_log_file=""
+
+    # 1. Route to the correct flow: resume or new.
+    # The --resume flag must be the first argument.
+    if [[ "$1" == "--resume" ]]; then
+        if _pi_handle_resume; then
+            # Prepend system prompt *after* getting content from the resumed file.
+            pi_args=("--append-system-prompt" "$HOME/.pi/session_rules.md" "${pi_args[@]}")
+            _pi_run_resumed_session
+        fi
+    else
+        # This is a new session.
+        _pi_parse_args # Modifies pi_args and sets custom_session_name.
+        pi_args=("--append-system-prompt" "$HOME/.pi/session_rules.md" "${pi_args[@]}")
+        _pi_run_new_session
+    fi
+}

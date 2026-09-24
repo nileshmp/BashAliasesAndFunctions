@@ -251,6 +251,7 @@ eval "$(pyenv init - zsh)"
 # sourcing external scripts
 source $HOME/openvpn/connect-piramal-vpn.sh
 source $CUSTOM_SCRIPT_DIR/.service_manager
+source $CUSTOM_SCRIPT_DIR/.pi_customization
 
 docker context use orbstack
 
