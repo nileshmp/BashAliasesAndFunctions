@@ -1,9 +1,2150 @@
 {
   "directed": false,
   "multigraph": false,
-  "graph": {},
-  "nodes": [],
-  "links": [],
-  "hyperedges": [],
-  "built_at_commit": "d2744117f05d67dbaefd6c0b90d2dc87356a5b30"
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "pi_provider_credential_flow",
+        "label": "Encrypted Provider and Model Selection Flow",
+        "nodes": [
+          "stage_pi_customization_pi",
+          "stage_pi_customization_pi_handle_providers",
+          "stage_pi_customization_pi_get_password",
+          "stage_pi_customization_pi_decrypt_providers",
+          "stage_pi_customization_pi_provider_menu",
+          "stage_pi_customization_pi_model_menu",
+          "stage_pi_models_conf_model_catalog"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "pi_customization.sh"
+      },
+      {
+        "id": "app_port_based_liveness",
+        "label": "Port-as-Ground-Truth Process Liveness Tracking",
+        "nodes": [
+          "stage_service_manager_app_csv",
+          "stage_service_manager_app_port_pids",
+          "stage_service_manager_app_group_pids",
+          "stage_service_manager_app_is_running",
+          "stage_service_manager_app_running_desc",
+          "stage_service_manager_app_start",
+          "stage_service_manager_app_stop",
+          "stage_service_manager_pid_sidecar_state"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "service_manager.sh"
+      },
+      {
+        "id": "zsh_one_indexing_fix_set",
+        "label": "Functions Corrected for Zsh 1-Based Indexing",
+        "nodes": [
+          "stage_pi_customization_zsh_one_indexed_array_invariant",
+          "stage_pi_customization_pi_provider_menu",
+          "stage_pi_customization_pi_model_menu",
+          "stage_pi_customization_pi_parse_args",
+          "stage_pi_customization_pi_handle_resume"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "pi_customization.sh"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "nilesh.sh",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "community": 0,
+      "norm_label": "nilesh.sh"
+    },
+    {
+      "label": "nilesh.sh script",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh_entry",
+      "community": 0,
+      "norm_label": "nilesh.sh script"
+    },
+    {
+      "label": "PATH",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L7",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_path",
+      "community": 0,
+      "norm_label": "path"
+    },
+    {
+      "label": "rsyncbkp()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L40",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_rsyncbkp",
+      "community": 0,
+      "norm_label": "rsyncbkp()"
+    },
+    {
+      "label": "PYTHONPATH",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L61",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_pythonpath",
+      "community": 0,
+      "norm_label": "pythonpath"
+    },
+    {
+      "label": "parse_git_branch()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L68",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_parse_git_branch",
+      "community": 1,
+      "norm_label": "parse_git_branch()"
+    },
+    {
+      "label": "PROMPT",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L77",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_prompt",
+      "community": 0,
+      "norm_label": "prompt"
+    },
+    {
+      "label": "CLICOLOR",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L79",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_clicolor",
+      "community": 0,
+      "norm_label": "clicolor"
+    },
+    {
+      "label": "ENV",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L82",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_env",
+      "community": 0,
+      "norm_label": "env"
+    },
+    {
+      "label": "use.virtual.environment.python()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L91",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_use_virtual_environment_python",
+      "community": 0,
+      "norm_label": "use.virtual.environment.python()"
+    },
+    {
+      "label": "git.delete.all.branches()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L96",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_git_delete_all_branches",
+      "community": 5,
+      "norm_label": "git.delete.all.branches()"
+    },
+    {
+      "label": "git.delete.remote.branch()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L108",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_git_delete_remote_branch",
+      "community": 5,
+      "norm_label": "git.delete.remote.branch()"
+    },
+    {
+      "label": "git.delete.local.branch()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L114",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_git_delete_local_branch",
+      "community": 5,
+      "norm_label": "git.delete.local.branch()"
+    },
+    {
+      "label": "git.contains.commit()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L124",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_git_contains_commit",
+      "community": 0,
+      "norm_label": "git.contains.commit()"
+    },
+    {
+      "label": "listJars()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L129",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_listjars",
+      "community": 0,
+      "norm_label": "listjars()"
+    },
+    {
+      "label": "loadenv()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L135",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_loadenv",
+      "community": 3,
+      "norm_label": "loadenv()"
+    },
+    {
+      "label": "unloadenv()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L142",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_unloadenv",
+      "community": 0,
+      "norm_label": "unloadenv()"
+    },
+    {
+      "label": "show.fmt.files()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L171",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_show_fmt_files",
+      "community": 0,
+      "norm_label": "show.fmt.files()"
+    },
+    {
+      "label": "fmt.files()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L176",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_fmt_files",
+      "community": 0,
+      "norm_label": "fmt.files()"
+    },
+    {
+      "label": "AWS_PROFILE",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L212",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_aws_profile",
+      "community": 0,
+      "norm_label": "aws_profile"
+    },
+    {
+      "label": "clean.orbstack()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L219",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_clean_orbstack",
+      "community": 0,
+      "norm_label": "clean.orbstack()"
+    },
+    {
+      "label": "PYENV_ROOT",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L247",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "stage_nilesh_pyenv_root",
+      "community": 0,
+      "norm_label": "pyenv_root"
+    },
+    {
+      "label": "pi_customization.sh",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "community": 2,
+      "norm_label": "pi_customization.sh"
+    },
+    {
+      "label": "pi_customization.sh script",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh_entry",
+      "community": 2,
+      "norm_label": "pi_customization.sh script"
+    },
+    {
+      "label": "_pi_get_password()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L7",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_get_password",
+      "community": 3,
+      "norm_label": "_pi_get_password()"
+    },
+    {
+      "label": "_pi_encrypt_providers()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L34",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_encrypt_providers",
+      "community": 4,
+      "norm_label": "_pi_encrypt_providers()"
+    },
+    {
+      "label": "_pi_decrypt_providers()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L47",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_decrypt_providers",
+      "community": 4,
+      "norm_label": "_pi_decrypt_providers()"
+    },
+    {
+      "label": "_pi_add_new_provider()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L58",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_add_new_provider",
+      "community": 3,
+      "norm_label": "_pi_add_new_provider()"
+    },
+    {
+      "label": "_pi_provider_menu()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L86",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "Now carries two explicit shell-indexing invariants written into the code as comments: (1) non-numeric input is rejected before any arithmetic comparison, because zsh arithmetic evaluation of a non-numeric string can expand/execute it; (2) `providers[$choice]` is indexed with the raw menu number because zsh arrays are 1-indexed, so the bash-style `choice-1` offset is deliberately NOT applied.",
+      "id": "stage_pi_customization_pi_provider_menu",
+      "community": 3,
+      "norm_label": "_pi_provider_menu()"
+    },
+    {
+      "label": "_pi_model_menu()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L136",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "Indexes model_ids with the raw menu number; the in-code comment records that subtracting 1 (bash habit) selected the previous model in the list and selected nothing at all for choice 1. Parses the INI-style .pi_models.conf with an inline awk section matcher rather than sourcing it, so the config file never executes.",
+      "id": "stage_pi_customization_pi_model_menu",
+      "community": 3,
+      "norm_label": "_pi_model_menu()"
+    },
+    {
+      "label": "_pi_handle_providers()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L188",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "Orchestrates the two documented workflows (first-time init vs standard execution) and self-heals a missing .pi_models.conf by writing a default via here-document. Credentials are injected as an exported {PROVIDER}_API_KEY environment variable rather than a CLI flag, because the `pi` binary reads the key from the environment; only --provider/--model go on the command line.",
+      "id": "stage_pi_customization_pi_handle_providers",
+      "community": 3,
+      "norm_label": "_pi_handle_providers()"
+    },
+    {
+      "label": "_pi_sanitize_filename()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L290",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_sanitize_filename",
+      "community": 2,
+      "norm_label": "_pi_sanitize_filename()"
+    },
+    {
+      "label": "_pi_parse_args()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L294",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "Loop is now 1..argc inclusive. The in-code comment records the bug it replaces: iterating 0..n-1 read the empty slot 0 and never reached the final element, which prepended an empty argument and silently dropped the last one (e.g. the value of --model). Mutates the caller's pi_args array in place through dynamic scoping.",
+      "id": "stage_pi_customization_pi_parse_args",
+      "community": 2,
+      "norm_label": "_pi_parse_args()"
+    },
+    {
+      "label": "_pi_handle_resume()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L320",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "The listed session number from `cat -n` is used directly as the zsh array index into session_files, since both are 1-based. Session list ordering comes from `ls -1t` (mtime), which is what makes append-on-resume keep a continued session at the top.",
+      "id": "stage_pi_customization_pi_handle_resume",
+      "community": 2,
+      "norm_label": "_pi_handle_resume()"
+    },
+    {
+      "label": "_pi_run_resumed_session()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L353",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi_run_resumed_session",
+      "community": 2,
+      "norm_label": "_pi_run_resumed_session()"
+    },
+    {
+      "label": "_pi_run_new_session()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L360",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "rationale": "Records to a PID-suffixed temp file and installs an EXIT trap that renames the partial log to *_INCOMPLETE.log, so an abrupt Ctrl+C never loses transcript data. The trap is cleared with `trap - EXIT` immediately after `script` returns so the normal naming path runs instead.",
+      "id": "stage_pi_customization_pi_run_new_session",
+      "community": 2,
+      "norm_label": "_pi_run_new_session()"
+    },
+    {
+      "label": "pi()",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L397",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "stage_pi_customization_pi",
+      "community": 2,
+      "norm_label": "pi()"
+    },
+    {
+      "label": "pi_models.conf.sh",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_models.conf.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_models_conf_sh",
+      "community": 6,
+      "norm_label": "pi_models.conf.sh"
+    },
+    {
+      "label": "pi_models.conf.sh script",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_models.conf.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_models_conf_sh_entry",
+      "community": 6,
+      "norm_label": "pi_models.conf.sh script"
+    },
+    {
+      "label": "service_manager.sh",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/service_manager.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_service_manager_sh",
+      "community": 7,
+      "norm_label": "service_manager.sh"
+    },
+    {
+      "label": "service_manager.sh script",
+      "file_type": "code",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/service_manager.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_service_manager_sh_entry",
+      "community": 7,
+      "norm_label": "service_manager.sh script"
+    },
+    {
+      "label": "Zsh Environment Bootstrap",
+      "file_type": "rationale",
+      "source_file": "nilesh.sh",
+      "source_location": "251-258",
+      "rationale": "nilesh.sh is the single entry point sourced by the user's shell: it sets PATH/tool homes, then sources .service_manager and .pi_customization so that app.* and pi() become available as interactive shell functions. Keeping the app launcher and the pi wrapper in separate sourced files (rather than inline) is what lets each be edited/reloaded independently via `source.env.script`.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_nilesh_shell_bootstrap",
+      "community": 1,
+      "norm_label": "zsh environment bootstrap"
+    },
+    {
+      "label": "Zsh 1-Indexed Array Invariant",
+      "file_type": "rationale",
+      "source_file": "pi_customization.sh",
+      "source_location": "116-133",
+      "rationale": "zsh arrays start at index 1, unlike bash arrays which start at 0. The file now encodes this as an explicit, commented invariant in every place a user-visible menu number is turned into an array subscript: the printed number IS the subscript, and no `-1` offset is applied. Violating it produced two distinct symptom classes - off-by-one selection (picking the previous entry, and nothing for choice 1) in the provider/model/session menus, and, in argument parsing, an empty leading element plus a silently dropped final element. A companion invariant guards non-numeric menu input before it reaches zsh arithmetic evaluation.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_zsh_one_indexed_array_invariant",
+      "community": 2,
+      "norm_label": "zsh 1-indexed array invariant"
+    },
+    {
+      "label": "In-Memory-Only Credential Handling",
+      "file_type": "rationale",
+      "source_file": "pi_customization.sh",
+      "source_location": "34-56",
+      "rationale": "Provider keys live on disk only inside .pi_providers.enc (openssl aes-256-cbc + pbkdf2, chmod 600). The password and decrypted plaintext exist only in shell locals for the life of the pi() call; decryption stderr is discarded and openssl's non-zero exit is the sole bad-password signal. Nothing decrypted is ever written back to disk.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_in_memory_credential_handling",
+      "community": 4,
+      "norm_label": "in-memory-only credential handling"
+    },
+    {
+      "label": "Per-Provider Model Catalog",
+      "file_type": "concept",
+      "source_file": "pi_models.conf.sh",
+      "source_location": "1-19",
+      "rationale": "INI-style catalog mapping model_id to a friendly display name, sectioned per provider. Externalising the catalog means new models are added by editing config, not the shell function. The live file has drifted from the default here-document baked into _pi_handle_providers: it adds gpt-6-sol and gpt-6-astra (whose display names smuggle in per-million-token pricing, since the menu shows only the friendly name).",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_models_conf_model_catalog",
+      "community": 3,
+      "norm_label": "per-provider model catalog"
+    },
+    {
+      "label": "APP_MAP",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "13-18",
+      "rationale": "Single associative-array declaration of every managed app as name -> \"dir:invocation[:ports]\", so directories need no common parent and adding an app is a one-line change. The optional ports field exists because wrappers like `npm run dev` / `npx vite` fork a child that actually binds the port and that child can be orphaned to PID 1, severing parent/child tracking.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_map",
+      "community": 1,
+      "norm_label": "app_map"
+    },
+    {
+      "label": "_app.csv",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "26-30",
+      "rationale": "Exists purely to guard a zsh splitting gotcha: splitting an empty string with (@s:,:) yields one empty element instead of zero, so every caller would otherwise iterate once over an empty port.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_csv",
+      "community": 1,
+      "norm_label": "_app.csv"
+    },
+    {
+      "label": "_app.port_pids",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "34-41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_port_pids",
+      "community": 1,
+      "norm_label": "_app.port_pids"
+    },
+    {
+      "label": "_app.group_pids",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "44-48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_group_pids",
+      "community": 1,
+      "norm_label": "_app.group_pids"
+    },
+    {
+      "label": "_app.is_running",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "55-68",
+      "rationale": "Liveness is judged by a listening port when the app declares one, because that is ground truth regardless of how the process tree forked; the recorded launcher PID is only the fallback for portless apps. The $2 override exists for app.start, which knows the freshly-resolved ports before any portfile for that run exists.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_is_running",
+      "community": 1,
+      "norm_label": "_app.is_running"
+    },
+    {
+      "label": "_app.running_desc",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "72-87",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_running_desc",
+      "community": 1,
+      "norm_label": "_app.running_desc"
+    },
+    {
+      "label": "_app.resolve",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "91-116",
+      "rationale": "Accepts either an APP_MAP key or an ad-hoc \"dir:command[:ports]\" spec, and returns a pipe-joined \"name|dir|cmd|ports\" record that callers split with IFS read. The trailing field is treated as ports only if it matches ^[0-9]+(,[0-9]+)*$, so commands that themselves contain a colon are not mis-parsed.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_resolve",
+      "community": 1,
+      "norm_label": "_app.resolve"
+    },
+    {
+      "label": "app.start",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "118-176",
+      "rationale": "Launches via nohup in a subshell, records pid/pgid/ports sidecar files under $APP_RUN_DIR, then polls lsof up to 20 times at 0.3s for the declared ports so 'started' means 'actually listening' rather than 'launcher forked'.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_start",
+      "community": 1,
+      "norm_label": "app.start"
+    },
+    {
+      "label": "app.stop",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "178-231",
+      "rationale": "Kills the union of the recorded launcher PID, every PID in its process group, and whatever currently owns the configured ports - deduplicated through an associative `seen` array - because npm/npx children get detached or reparented to PID 1 and would otherwise survive. TERM first, then re-checks (including ports) and KILLs survivors; stale sidecar files are cleaned up when nothing is running.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_stop",
+      "community": 1,
+      "norm_label": "app.stop"
+    },
+    {
+      "label": "app.log",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "233-241",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_log",
+      "community": 1,
+      "norm_label": "app.log"
+    },
+    {
+      "label": "app.list",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "243-248",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_list",
+      "community": 1,
+      "norm_label": "app.list"
+    },
+    {
+      "label": "app.stop.all",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "250-255",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_stop_all",
+      "community": 1,
+      "norm_label": "app.stop.all"
+    },
+    {
+      "label": "app.status",
+      "file_type": "code",
+      "source_file": "service_manager.sh",
+      "source_location": "257-277",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_app_status",
+      "community": 1,
+      "norm_label": "app.status"
+    },
+    {
+      "label": "Sidecar PID/PGID/Port State Files",
+      "file_type": "concept",
+      "source_file": "service_manager.sh",
+      "source_location": "20-21",
+      "rationale": "Per-app state is kept as flat files ($name.pid, $name.pgid, $name.ports, $name.log) under $APP_RUN_DIR (default ~/.local/state/app-launcher) so that status and stop work from any new shell, not just the one that started the app. Three separate tracking handles are stored because no single one survives every forking/orphaning pattern.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_service_manager_pid_sidecar_state",
+      "community": 1,
+      "norm_label": "sidecar pid/pgid/port state files"
+    },
+    {
+      "label": "Robust Recording and Naming (spec 1.1)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "9-21",
+      "rationale": "Logs are named at session END, not start, so the timestamp reflects when work finished; a trap preserves an _INCOMPLETE log on abrupt termination rather than losing the transcript; naming is a prioritized chain (--name flag > post-session prompt > timestamp fallback) so the common case needs no decision up front.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_robust_recording_and_naming",
+      "community": 2,
+      "norm_label": "robust recording and naming (spec 1.1)"
+    },
+    {
+      "label": "True Session Continuation (spec 1.2)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "23-28",
+      "rationale": "Resume appends to the ORIGINAL log with `script -a` instead of creating a new file, which both keeps one continuous transcript and bumps the file's mtime - and since the resume listing is sorted by most-recently-modified, a continued session correctly floats to the top next time.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_true_session_continuation",
+      "community": 2,
+      "norm_label": "true session continuation (spec 1.2)"
+    },
+    {
+      "label": "Helper-Function Refactoring (spec 2)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "30-39",
+      "rationale": "The monolithic pi() is decomposed into single-responsibility helpers with pi() reduced to an orchestrator, for readability and maintainability. The spec enumerates exactly five helpers; the implementation grew a second family (_pi_get_password, _pi_encrypt_providers, _pi_decrypt_providers, _pi_add_new_provider, _pi_provider_menu, _pi_model_menu, _pi_handle_providers) that the spec's list never updated.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_code_refactoring",
+      "community": 2,
+      "norm_label": "helper-function refactoring (spec 2)"
+    },
+    {
+      "label": "Encrypted Provider Storage (spec 3.1)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "45-51",
+      "rationale": "Per-project .pi_providers.enc encrypted with openssl aes-256-cbc, unlocked by a password prompted once per session; password and decrypted keys are held in memory only and never written to disk, so a stolen repo copy yields nothing usable.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_storage_and_encryption",
+      "community": 4,
+      "norm_label": "encrypted provider storage (spec 3.1)"
+    },
+    {
+      "label": "Provider User Workflows (spec 3.2)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "53-64",
+      "rationale": "Two branches: first-time initialization (offer to create the file, set+confirm password, add first provider) and standard execution (prompt password, then a numbered menu of saved providers plus [Add a new provider] and [Continue without a provider]). Implemented in _pi_handle_providers/_pi_provider_menu, except that after adding a provider the implementation returns 1 and asks the user to re-run instead of continuing into selection.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_user_workflows",
+      "community": 3,
+      "norm_label": "provider user workflows (spec 3.2)"
+    },
+    {
+      "label": "Credential Injection (spec 3.2)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "65-65",
+      "rationale": "DIVERGENCE: the spec says the script injects `--provider` and `--api-key` arguments into the pi command line. The implementation injects `--provider` and `--model` and exports the key as {PROVIDER}_API_KEY instead, with an in-code comment explaining that `pi` expects the key as an environment variable, not a flag. The env-var route is also the safer one (the key never appears in the process argv / shell history), so the implementation is correct and the spec is stale. The spec likewise never mentions dynamic model selection or .pi_models.conf at all.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_credential_injection",
+      "community": 3,
+      "norm_label": "credential injection (spec 3.2)"
+    },
+    {
+      "label": "Filename Sanitization (spec 1.1)",
+      "file_type": "concept",
+      "source_file": "pi_customization_specs.md",
+      "source_location": "21-21",
+      "rationale": "All user-supplied session names are sanitized to valid filenames, since the name is taken from free-form interactive input and is used directly as a path component.",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stage_pi_customization_specs_filename_sanitization",
+      "community": 2,
+      "norm_label": "filename sanitization (spec 1.1)"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh_entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L212",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_aws_profile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_clean_orbstack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_clicolor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_env",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_fmt_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_git_contains_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_git_delete_all_branches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_git_delete_local_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_git_delete_remote_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_listjars",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L135",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_loadenv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_parse_git_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L247",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_pyenv_root",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_pythonpath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_rsyncbkp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_show_fmt_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_unloadenv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/nilesh.sh",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_nilesh_sh",
+      "target": "stage_nilesh_use_virtual_environment_python",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "nilesh.sh",
+      "source_location": "68-77",
+      "weight": 1.0,
+      "source": "stage_nilesh_parse_git_branch",
+      "target": "stage_nilesh_shell_bootstrap"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "nilesh.sh",
+      "source_location": "98",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_nilesh_git_delete_all_branches",
+      "target": "stage_nilesh_git_delete_local_branch"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "nilesh.sh",
+      "source_location": "105",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_nilesh_git_delete_all_branches",
+      "target": "stage_nilesh_git_delete_remote_branch"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "nilesh.sh",
+      "source_location": "135-140",
+      "weight": 1.0,
+      "source": "stage_nilesh_loadenv",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh_entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L397",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_add_new_provider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_decrypt_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_encrypt_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_get_password",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_handle_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L320",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_handle_resume",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_model_menu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_parse_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_provider_menu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_run_new_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L353",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_run_resumed_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_customization.sh",
+      "source_location": "L290",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_customization_sh",
+      "target": "stage_pi_customization_pi_sanitize_filename",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "224",
+      "weight": 1.0,
+      "context": "call",
+      "source": "stage_pi_customization_pi_handle_providers",
+      "target": "stage_pi_customization_pi_get_password"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "42-44",
+      "weight": 1.0,
+      "source": "stage_pi_customization_in_memory_credential_handling",
+      "target": "stage_pi_customization_pi_encrypt_providers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "228",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi_handle_providers",
+      "target": "stage_pi_customization_pi_encrypt_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "47-48",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_storage_and_encryption",
+      "target": "stage_pi_customization_pi_encrypt_providers"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "54-55",
+      "weight": 1.0,
+      "source": "stage_pi_customization_in_memory_credential_handling",
+      "target": "stage_pi_customization_pi_decrypt_providers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "239",
+      "weight": 1.0,
+      "source": "stage_pi_customization_pi_handle_providers",
+      "target": "stage_pi_customization_pi_decrypt_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "47-48",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_storage_and_encryption",
+      "target": "stage_pi_customization_pi_decrypt_providers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "226",
+      "weight": 1.0,
+      "context": "call",
+      "source": "stage_pi_customization_pi_handle_providers",
+      "target": "stage_pi_customization_pi_add_new_provider"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "125",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi_provider_menu",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "61-64",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_user_workflows",
+      "target": "stage_pi_customization_pi_provider_menu"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "123-124",
+      "weight": 1.0,
+      "source": "stage_pi_customization_zsh_one_indexed_array_invariant",
+      "target": "stage_pi_customization_pi_provider_menu"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "179",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi_model_menu",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "141",
+      "weight": 1.0,
+      "source": "stage_pi_customization_pi_model_menu",
+      "target": "stage_pi_models_conf_model_catalog"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "176-178",
+      "weight": 1.0,
+      "source": "stage_pi_customization_zsh_one_indexed_array_invariant",
+      "target": "stage_pi_customization_pi_model_menu"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "service_manager.sh",
+      "source_location": "91-116",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_resolve",
+      "target": "stage_pi_customization_pi_model_menu"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "413",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "196-217",
+      "weight": 1.0,
+      "source": "stage_pi_customization_pi_handle_providers",
+      "target": "stage_pi_models_conf_model_catalog"
+    },
+    {
+      "relation": "references",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.25,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "65",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_credential_injection",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "53-64",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_user_workflows",
+      "target": "stage_pi_customization_pi_handle_providers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "390",
+      "weight": 1.0,
+      "source": "stage_pi_customization_pi_run_new_session",
+      "target": "stage_pi_customization_pi_sanitize_filename"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "34",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_filename_sanitization",
+      "target": "stage_pi_customization_pi_sanitize_filename"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "403",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi",
+      "target": "stage_pi_customization_pi_parse_args"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "35",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_code_refactoring",
+      "target": "stage_pi_customization_pi_parse_args"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "18",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_robust_recording_and_naming",
+      "target": "stage_pi_customization_pi_parse_args"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "295-297",
+      "weight": 1.0,
+      "source": "stage_pi_customization_zsh_one_indexed_array_invariant",
+      "target": "stage_pi_customization_pi_parse_args"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "service_manager.sh",
+      "source_location": "26-30",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_csv",
+      "target": "stage_pi_customization_pi_parse_args"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "422",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi",
+      "target": "stage_pi_customization_pi_handle_resume"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "347",
+      "weight": 1.0,
+      "source": "stage_pi_customization_pi_handle_resume",
+      "target": "stage_pi_customization_pi_run_resumed_session"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "36",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_code_refactoring",
+      "target": "stage_pi_customization_pi_handle_resume"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "28",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_true_session_continuation",
+      "target": "stage_pi_customization_pi_handle_resume"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh",
+      "source_location": "346",
+      "weight": 1.0,
+      "source": "stage_pi_customization_zsh_one_indexed_array_invariant",
+      "target": "stage_pi_customization_pi_handle_resume"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "service_manager.sh",
+      "source_location": "55-68",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_is_running",
+      "target": "stage_pi_customization_pi_handle_resume"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "424",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi",
+      "target": "stage_pi_customization_pi_run_resumed_session"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "38",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_code_refactoring",
+      "target": "stage_pi_customization_pi_run_resumed_session"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "27",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_true_session_continuation",
+      "target": "stage_pi_customization_pi_run_resumed_session"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "source_file": "pi_customization.sh",
+      "source_location": "378",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "stage_pi_customization_pi_run_new_session",
+      "target": "stage_pi_customization_pi"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "37",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_code_refactoring",
+      "target": "stage_pi_customization_pi_run_new_session"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "13-20",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_robust_recording_and_naming",
+      "target": "stage_pi_customization_pi_run_new_session"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "service_manager.sh",
+      "source_location": "211-215",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop",
+      "target": "stage_pi_customization_pi_run_new_session"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "nilesh.sh",
+      "source_location": "254",
+      "weight": 1.0,
+      "source": "stage_nilesh_shell_bootstrap",
+      "target": "stage_pi_customization_pi"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "39",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_code_refactoring",
+      "target": "stage_pi_customization_pi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/pi_models.conf.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_models_conf_sh",
+      "target": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_pi_models_conf_sh_entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/private/tmp/claude-501/-Users-nilesh-work-personal-BashAliasesAndFunctions/720c9523-288b-45a0-9c45-028fd4ee2aec/scratchpad/stage/service_manager.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_service_manager_sh",
+      "target": "private_tmp_claude_501_users_nilesh_work_personal_bashaliasesandfunctions_720c9523_288b_45a0_9c45_028fd4ee2aec_scratchpad_stage_service_manager_sh_entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "service_manager.sh",
+      "source_location": "14-15",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_map",
+      "target": "stage_nilesh_shell_bootstrap"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "nilesh.sh",
+      "source_location": "253",
+      "weight": 1.0,
+      "source": "stage_nilesh_shell_bootstrap",
+      "target": "stage_service_manager_app_start"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "45-51",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_storage_and_encryption",
+      "target": "stage_pi_customization_in_memory_credential_handling"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "pi_customization_specs.md",
+      "source_location": "65",
+      "weight": 1.0,
+      "source": "stage_pi_customization_specs_credential_injection",
+      "target": "stage_pi_models_conf_model_catalog"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "245",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_list",
+      "target": "stage_service_manager_app_map"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "94-95",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_resolve",
+      "target": "stage_service_manager_app_map"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "121",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_app_map"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "262",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_status",
+      "target": "stage_service_manager_app_map"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "252",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop_all",
+      "target": "stage_service_manager_app_map"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "61",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_is_running",
+      "target": "stage_service_manager_app_csv"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "37",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_port_pids",
+      "target": "stage_service_manager_app_csv"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "79",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_running_desc",
+      "target": "stage_service_manager_app_csv"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "163",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_app_csv"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "205",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop",
+      "target": "stage_service_manager_app_port_pids"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "205",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop",
+      "target": "stage_service_manager_app_group_pids"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "58-67",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_is_running",
+      "target": "stage_service_manager_pid_sidecar_state"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "136",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_app_is_running"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "263",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_status",
+      "target": "stage_service_manager_app_is_running"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "190",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop",
+      "target": "stage_service_manager_app_is_running"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "253",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop_all",
+      "target": "stage_service_manager_app_is_running"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "75-86",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_running_desc",
+      "target": "stage_service_manager_pid_sidecar_state"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "137",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_app_running_desc"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "264",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_status",
+      "target": "stage_service_manager_app_running_desc"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "121",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_app_resolve"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "126-151",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_start",
+      "target": "stage_service_manager_pid_sidecar_state"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "186-229",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop",
+      "target": "stage_service_manager_pid_sidecar_state"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "253",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_stop_all",
+      "target": "stage_service_manager_app_stop"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh",
+      "source_location": "240",
+      "weight": 1.0,
+      "source": "stage_service_manager_app_log",
+      "target": "stage_service_manager_pid_sidecar_state"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "pi_provider_credential_flow",
+      "label": "Encrypted Provider and Model Selection Flow",
+      "nodes": [
+        "stage_pi_customization_pi",
+        "stage_pi_customization_pi_handle_providers",
+        "stage_pi_customization_pi_get_password",
+        "stage_pi_customization_pi_decrypt_providers",
+        "stage_pi_customization_pi_provider_menu",
+        "stage_pi_customization_pi_model_menu",
+        "stage_pi_models_conf_model_catalog"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh"
+    },
+    {
+      "id": "app_port_based_liveness",
+      "label": "Port-as-Ground-Truth Process Liveness Tracking",
+      "nodes": [
+        "stage_service_manager_app_csv",
+        "stage_service_manager_app_port_pids",
+        "stage_service_manager_app_group_pids",
+        "stage_service_manager_app_is_running",
+        "stage_service_manager_app_running_desc",
+        "stage_service_manager_app_start",
+        "stage_service_manager_app_stop",
+        "stage_service_manager_pid_sidecar_state"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "service_manager.sh"
+    },
+    {
+      "id": "zsh_one_indexing_fix_set",
+      "label": "Functions Corrected for Zsh 1-Based Indexing",
+      "nodes": [
+        "stage_pi_customization_zsh_one_indexed_array_invariant",
+        "stage_pi_customization_pi_provider_menu",
+        "stage_pi_customization_pi_model_menu",
+        "stage_pi_customization_pi_parse_args",
+        "stage_pi_customization_pi_handle_resume"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pi_customization.sh"
+    }
+  ],
+  "built_at_commit": "d080fdc8a57aa44786dd2efd7bd3cfedda02aa89"
 }

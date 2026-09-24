@@ -2,6 +2,8 @@
 
 # --- Section 1: Provider & Encryption Management ---
 
+echo "Loading Pi customization functions..."
+
 _pi_get_password() {
     # Securely prompts for and returns a password.
     # $1: The prompt string to display to the user.
@@ -12,10 +14,10 @@ _pi_get_password() {
     local password_confirm=""
 
     while true; do
-        read -s "password?$prompt_text"
+        read "password?$prompt_text"
         echo
         if [[ "$confirmation_required" == "confirm" ]]; then
-            read -s "password_confirm?Confirm password: "
+            read "password_confirm?Confirm password: "
             echo
             if [[ "$password" == "$password_confirm" ]]; then
                 break
@@ -64,7 +66,7 @@ _pi_add_new_provider() {
     echo -n "Enter provider name (e.g., openai, google): "
     read new_provider
     echo -n "Enter API key for '$new_provider': "
-    read -s new_key
+    read new_key
     echo
 
     if [[ -z "$new_provider" || -z "$new_key" ]]; then
@@ -111,9 +113,16 @@ _pi_provider_menu() {
     echo -n "Enter your choice: "
     read choice
 
+    if ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        # Non-numeric input - don't let it reach zsh arithmetic evaluation.
+        REPLY="continue_without"
+        return 0
+    fi
+
     if [[ "$choice" -gt 0 && "$choice" -le "${#providers[@]}" ]]; then
-        # A provider was selected
-        selected_provider="${providers[$((choice-1))]}"
+        # A provider was selected. zsh arrays are 1-indexed, so the menu
+        # number is already the array index - do not subtract 1.
+        selected_provider="${providers[$choice]}"
         selected_key="${provider_keys[$selected_provider]}"
     elif [[ "$choice" -eq $((${#providers[@]} + 1)) ]]; then
         # Add new provider
@@ -124,12 +133,89 @@ _pi_provider_menu() {
     fi
 }
 
+_pi_model_menu() {
+    # Displays an interactive menu to select a model for a given provider.
+    # $1: The selected provider name (e.g., "openai").
+    # Sets `selected_model` in the parent scope.
+    local provider="$1"
+    local model_config_file=".pi_models.conf"
+    local -a model_ids
+    local -a model_names
+    local in_section=false
+
+    # Use awk to parse the INI-style config file
+    local models_data=$(awk -v provider="[$provider]" '
+        $0 == provider { in_section = 1; next }
+        /^\[/ { in_section = 0 }
+        in_section && /=/ { print }
+    ' "$model_config_file")
+
+    if [[ -z "$models_data" ]]; then
+        echo "Warning: No models found for provider '$provider' in $model_config_file."
+        selected_model="" # Ensure it's empty
+        return 1
+    fi
+    
+    while IFS='=' read -r id name; do
+        model_ids+=("$id")
+        # Remove quotes from the friendly name
+        model_names+=("$(echo "$name" | tr -d '\"')")
+    done <<< "$models_data"
+
+    echo "Select a model for '$provider':"
+    local i=1
+    for name in "${model_names[@]}"; do
+        echo "$i) $name"
+        ((i++))
+    done
+
+    echo -n "Enter your choice: "
+    read choice
+
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -gt 0 && "$choice" -le "${#model_ids[@]}" ]]; then
+        # zsh arrays are 1-indexed, so the menu number is already the array
+        # index - subtracting 1 here selected the previous model in the list
+        # (and nothing at all for choice 1).
+        selected_model="${model_ids[$choice]}"
+    else
+        echo "Invalid choice. Aborting."
+        selected_model=""
+        return 1
+    fi
+    return 0
+}
+
 _pi_handle_providers() {
     # Main orchestrator for the provider management feature.
     # Sets `provider_args` in the parent scope if a provider is chosen.
     local provider_file=".pi_providers.enc"
+    local model_config_file=".pi_models.conf"
     local password=""
     
+    # --- New: Check for model config and create if missing ---
+    if [ ! -f "$model_config_file" ]; then
+        echo "Model configuration file not found. Creating a default '$model_config_file'."
+        # This uses a here-document to write the default config
+        cat > "$model_config_file" <<'EOF'
+# This file configures the models available for each provider in the pi wrapper script.
+# Format: model_id="Friendly Display Name"
+
+[google]
+gemini-flash-latest="Gemini Flash (Latest)"
+gemini-1.5-pro-latest="Gemini 1.5 Pro"
+
+[openai]
+gpt-4o="GPT-4o (Omni)"
+gpt-4o-mini="GPT-4o Mini"
+gpt-4-turbo="GPT-4 Turbo"
+
+[anthropic]
+claude-3-5-sonnet-20240620="Claude 3.5 Sonnet"
+claude-3-opus-20240229="Claude 3 Opus"
+claude-3-haiku-20240307="Claude 3 Haiku"
+EOF
+    fi
+
     if [ ! -f "$provider_file" ]; then
         # Workflow A: First-time initialization
         echo -n "No provider file found. Create one? [Y/n] "
@@ -169,10 +255,30 @@ _pi_handle_providers() {
         fi
     fi
     
-    # If a provider was selected (either on init or from menu), set the args.
+    # --- Updated Logic: Use dynamic model selection ---
     if [[ -n "$selected_provider" && -n "$selected_key" ]]; then
-        provider_args=("--provider" "$selected_provider" "--api-key" "$selected_key")
-        echo "Using provider: $selected_provider"
+        local selected_model=""
+        if _pi_model_menu "$selected_provider"; then
+            # If a model was successfully selected
+            if [[ -n "$selected_model" ]]; then
+                provider_args=("--provider" "$selected_provider" "--model" "$selected_model")
+                # The 'pi' command expects the API key as an environment variable (e.g., OPENAI_API_KEY),
+                # not as a command-line flag. This converts the provider name to the correct env var format and exports it.
+                local env_var_name
+                env_var_name=$(echo "$selected_provider" | tr '[:lower:]' '[:upper:]')_API_KEY
+                export "${env_var_name}=${selected_key}"
+
+                echo "Using provider: $selected_provider, Model: $selected_model"
+            else
+                # This case should ideally not be hit if _pi_model_menu works correctly
+                echo "Error: Model selection failed. Aborting."
+                return 1
+            fi
+        else
+            # _pi_model_menu returned a failure (e.g., no models in config or invalid choice)
+            echo "Aborting due to model selection issue."
+            return 1
+        fi
     fi
     
     return 0
@@ -186,19 +292,28 @@ _pi_sanitize_filename() {
 }
 
 _pi_parse_args() {
+    # zsh arrays are 1-indexed. Iterating 0..n-1 read the empty slot 0 and
+    # never reached the final element, which prepended an empty argument and
+    # silently dropped the last one (e.g. the value of --model).
     local temp_args=()
-    for ((i = 0; i < ${#pi_args[@]}; i++)); do
+    local i=1
+    local argc=${#pi_args[@]}
+
+    while (( i <= argc )); do
         if [[ "${pi_args[i]}" == "--name" ]]; then
-            if [[ -n "${pi_args[i+1]}" ]]; then
+            if (( i < argc )) && [[ -n "${pi_args[i+1]}" ]]; then
                 custom_session_name="${pi_args[i+1]}"
-                ((i++))
+                (( i += 2 ))
             else
                 echo "Warning: --name flag provided without a value. Ignoring."
+                (( i++ ))
             fi
         else
             temp_args+=("${pi_args[i]}")
+            (( i++ ))
         fi
     done
+
     pi_args=("${temp_args[@]}")
 }
 
@@ -228,7 +343,8 @@ _pi_handle_resume() {
         return 1
     fi
 
-    target_log_file="${SESSIONS_DIR}/${session_files[$((session_num - 1))]}"
+    # zsh arrays are 1-indexed: the listed session number is the array index.
+    target_log_file="${SESSIONS_DIR}/${session_files[$session_num]}"
     echo "Resuming session from $(basename "$target_log_file")..."
     pi_args=("--" "$(cat "$target_log_file")")
     return 0
@@ -236,6 +352,7 @@ _pi_handle_resume() {
 
 _pi_run_resumed_session() {
     echo "New activity will be appended to $(basename "$target_log_file")."
+    echo "DEBUG: Running command ->" "pi" "${pi_args[@]}"
     script -q -a "$target_log_file" command pi "${pi_args[@]}"
     echo "Pi session ended. Log updated in $(basename "$target_log_file")"
 }
@@ -252,6 +369,7 @@ _pi_run_new_session() {
     ' EXIT
 
     echo "Starting new Pi session..."
+    echo "DEBUG: Running command ->" "pi" "${pi_args[@]}"
     script -q "$temp_log_file" command pi "${pi_args[@]}"
 
     trap - EXIT
