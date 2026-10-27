@@ -432,7 +432,8 @@ pi() {
         echo "Warning: $rules_file is empty or unreadable. Starting without session rules."
     else
         rules_args=("--append-system-prompt" "$rules_file")
-        echo "Session rules: ${rules_file/#$HOME/~} (${#${(f)"$(<"$rules_file")"}} lines)"
+        local -a rule_lines=("${(@f)$(<"$rules_file")}")  # quoted (@f) keeps blank lines
+        echo "Session rules: ${rules_file/#$HOME/~} (${#rule_lines} lines)"
     fi
 
     pi_args=("${rules_args[@]}" "${provider_args[@]}" "${pi_args[@]}")
