@@ -1,397 +1,440 @@
 # --- Pi Customization Helper Functions ---
 
-# --- Section 1: Provider & Encryption Management ---
-
 echo "Loading Pi customization functions..."
 
-_pi_get_password() {
-    # Securely prompts for and returns a password.
-    # $1: The prompt string to display to the user.
-    # $2 (optional): If set to "confirm", will prompt for confirmation.
-    local prompt_text="$1"
-    local confirmation_required="$2"
-    local password=""
-    local password_confirm=""
+_PI_WRAPPER_DIR="$HOME/.pi/wrapper"                          # per-project files live under projects/
+_PI_MODELS_CONF="${${(%):-%x}:a:h}/.pi_models.conf"          # shared: next to this script
+_PI_MAX_RETRIES=${PI_MAX_RETRIES:-3}                         # attempts for re-asked prompts
 
-    while true; do
-        read "password?$prompt_text"
-        echo
-        if [[ "$confirmation_required" == "confirm" ]]; then
-            read "password_confirm?Confirm password: "
-            echo
-            if [[ "$password" == "$password_confirm" ]]; then
-                break
-            else
-                echo "Passwords do not match. Please try again."
-            fi
+# --- Section 0: Project Files ---
+
+_pi_project_key() {
+    # Prints the folder name pi uses for the current directory's sessions
+    # (~/.pi/agent/sessions/--Users-me-proj--). The wrapper uses the same name
+    # for its own per-project folder, so the two line up.
+    local cwd=${PWD:A}  # symlinks resolved, like pi's process.cwd()
+    print -r -- "--${${cwd#/}//[\/\\:]/-}--"
+}
+
+_pi_project_files() {
+    # Sets `provider_file` and `sessions_dir` in the caller's scope for the
+    # current directory, under ~/.pi/wrapper/projects/<project key>.
+    local dir="$_PI_WRAPPER_DIR/projects/$(_pi_project_key)"
+    provider_file="$dir/providers.enc"
+    sessions_dir="$dir/sessions"
+
+    # Move in files that older versions of this wrapper kept in the project folder.
+    local old_file=".pi_providers.enc" old_sessions=".pi_sessions" f
+    [[ -f "$old_file" || -d "$old_sessions" ]] || return 0
+    ( umask 077; mkdir -p "$sessions_dir" ) || return 1
+    if [[ -f "$old_file" ]]; then
+        if [[ -e "$provider_file" ]]; then
+            echo "Warning: $provider_file already exists; leaving $PWD/$old_file in place."
         else
-            break
+            mv "$old_file" "$provider_file" && echo "Moved $PWD/$old_file -> $provider_file"
         fi
+    fi
+    if [[ -d "$old_sessions" ]]; then
+        for f in "$old_sessions"/*(DN); do
+            mv -n "$f" "$sessions_dir/"
+        done
+        if rmdir "$old_sessions" 2>/dev/null; then
+            echo "Moved $PWD/$old_sessions/ -> $sessions_dir/"
+        else
+            echo "Warning: some logs in $PWD/$old_sessions/ share a name with existing ones and were left in place."
+        fi
+    fi
+}
+
+# --- Section 1: Provider & Encryption Management ---
+
+_pi_get_password() {
+    # Prompts (hidden) for a password twice and returns it in REPLY once both
+    # entries match - since the typing can't be seen, the second entry is the
+    # only guard against a typo. Gives up after $_PI_MAX_RETRIES mismatches.
+    local pw confirm attempt
+    for (( attempt = 1; attempt <= _PI_MAX_RETRIES; attempt++ )); do
+        read -s "pw?$1"; echo
+        read -s "confirm?Confirm password: "; echo
+        if [[ "$pw" == "$confirm" ]]; then
+            REPLY=$pw
+            return 0
+        fi
+        echo -n "Passwords do not match."
+        (( attempt < _PI_MAX_RETRIES )) && echo " Please try again ($attempt/$_PI_MAX_RETRIES)."
     done
-    REPLY=$password
+    echo " Too many failed attempts. Aborting."
+    return 1
+}
+
+_pi_valid_entry() {
+    # True if $1 is a well-formed `provider=key` line. Used both when adding a
+    # provider and when checking a decryption, so anything saved can be read back.
+    local LC_ALL=C  # byte-wise matching, so garbage bytes don't raise regex errors
+    [[ "$1" =~ ^[A-Za-z0-9_-]+=[[:print:]]+$ ]]
 }
 
 _pi_encrypt_providers() {
-    # Encrypts provider data and saves it to the file.
-    # $1: The plaintext provider data.
-    # $2: The password.
-    local providers_plaintext="$1"
-    local password="$2"
-    local provider_file=".pi_providers.enc"
-    
-    echo "$providers_plaintext" | openssl enc -aes-256-cbc -pass pass:"$password" -pbkdf2 -out "$provider_file"
-    # Ensure file permissions are restrictive
-    chmod 600 "$provider_file"
+    # $1: plaintext provider data, $2: password. umask keeps the file private from the start.
+    ( umask 077
+      print -r -- "$1" | openssl enc -aes-256-cbc -pass pass:"$2" -pbkdf2 -out "$provider_file" )
 }
 
 _pi_decrypt_providers() {
-    # Decrypts the provider file and returns the plaintext.
-    # $1: The password.
-    # Returns 0 on success, 1 on failure.
-    local password="$1"
-    local provider_file=".pi_providers.enc"
-    
-    # openssl will return a non-zero exit code for bad passwords/decryption failure.
-    openssl enc -d -aes-256-cbc -pass pass:"$password" -pbkdf2 -in "$provider_file" 2>/dev/null
+    # $1: password. Prints the plaintext; returns 1 on failure.
+    # openssl usually fails on a bad password, but roughly 1 in 256 wrong
+    # passwords still pass the padding check and yield garbage. Only accept
+    # output where every non-empty line looks like `provider=key`.
+    local plaintext line
+    plaintext=$(openssl enc -d -aes-256-cbc -pass pass:"$1" -pbkdf2 -in "$provider_file" 2>/dev/null) || return 1
+    [[ -n "$plaintext" ]] || return 1
+    while IFS= read -r line; do
+        [[ -z "$line" ]] || _pi_valid_entry "$line" || return 1
+    done <<< "$plaintext"
+    print -r -- "$plaintext"
+}
+
+_pi_unlock() {
+    # Asks for the project password and decrypts the provider file.
+    # Sets `password` and `plaintext` in the caller's scope.
+    _pi_get_password "Enter provider password for this project: " || return 1
+    password=$REPLY
+    plaintext=$(_pi_decrypt_providers "$password") && return 0
+    echo "Decryption failed. Invalid password."
+    return 1
+}
+
+pi_show_providers() {
+    # Prints this project's providers. Keys are masked unless --reveal is given.
+    local password plaintext line key provider_file sessions_dir
+    _pi_project_files || return 1
+    if [[ ! -f "$provider_file" ]]; then
+        echo "No provider file found in $PWD."
+        return 1
+    fi
+    _pi_unlock || return 1
+    if [[ "$1" == "--reveal" ]]; then
+        print -r -- "$plaintext"
+        return 0
+    fi
+    for line in ${(f)plaintext}; do
+        key=${line#*=}
+        if (( ${#key} > 8 )); then key="${key[1,4]}...${key[-4,-1]}"; else key="****"; fi
+        print -r -- "${line%%=*}=$key"
+    done
 }
 
 _pi_add_new_provider() {
-    # Interactively adds a new provider and key.
-    # $1 (optional): The existing provider plaintext.
-    # Returns the updated provider plaintext.
-    local providers_plaintext="$1"
-    local new_provider=""
-    local new_key=""
-
-    echo -n "Enter provider name (e.g., openai, google): "
-    read new_provider
-    echo -n "Enter API key for '$new_provider': "
-    read new_key
+    # $1: existing provider plaintext (may be empty). Returns the updated plaintext
+    # in REPLY and sets `new_provider` in the caller's scope. Adding a provider
+    # that already exists replaces its key in place.
+    local name key i
+    local -a lines=(${(f)1})
+    read -r "name?Enter provider name (e.g., openai, google): "
+    read -r "key?Enter API key for '$name': "  # -r: keep backslashes in the key
     echo
-
-    if [[ -z "$new_provider" || -z "$new_key" ]]; then
-        echo "Provider name and key cannot be empty."
-        REPLY=$providers_plaintext
+    if ! _pi_valid_entry "$name=$key"; then
+        echo "Provider name must be letters, digits, '-' or '_', and the key cannot be empty."
         return 1
     fi
-    
-    local new_entry="${new_provider}=${new_key}"
-    if [[ -n "$providers_plaintext" ]]; then
-        REPLY="${providers_plaintext}\n${new_entry}"
-    else
-        REPLY="$new_entry"
-    fi
+    i=${lines[(i)${(b)name}=*]}  # index of the existing entry, or one past the end
+    (( i <= ${#lines} )) && echo "Replacing the existing key for '$name'."
+    lines[i]="$name=$key"
+    REPLY=${(F)lines}
+    new_provider=$name
 }
 
-_pi_provider_menu() {
-    # Displays the interactive menu to select a provider.
-    # $1: The decrypted provider plaintext.
-    # Sets `selected_provider` and `selected_key` in the parent scope.
-    local providers_plaintext="$1"
-    local -a providers
-    local -A provider_keys
-
-    # Read the plaintext into an array and an associative array for easy lookup
-    while IFS='=' read -r key value; do
-        if [[ -n "$key" ]]; then
-            providers+=("$key")
-            provider_keys[$key]="$value"
-        fi
-    done <<< "$providers_plaintext"
-
-    echo "Select a provider for this session:"
-    local i=1
-    for p in "${providers[@]}"; do
-        echo "$i) $p"
-        ((i++))
-    done
-    echo "---------------------"
-    echo "$i) [Add a new provider]"
-    ((i++))
-    echo "$i) [Continue without a provider]"
-
-    echo -n "Enter your choice: "
-    read choice
-
-    if ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-        # Non-numeric input - don't let it reach zsh arithmetic evaluation.
-        REPLY="continue_without"
-        return 0
-    fi
-
-    if [[ "$choice" -gt 0 && "$choice" -le "${#providers[@]}" ]]; then
-        # A provider was selected. zsh arrays are 1-indexed, so the menu
-        # number is already the array index - do not subtract 1.
-        selected_provider="${providers[$choice]}"
-        selected_key="${provider_keys[$selected_provider]}"
-    elif [[ "$choice" -eq $((${#providers[@]} + 1)) ]]; then
-        # Add new provider
-        REPLY="add_new"
-    else
-        # Continue without, or invalid choice
-        REPLY="continue_without"
-    fi
+_pi_menu() {
+    # $1: title, remaining args: items. Sets REPLY to the chosen 1-based index, or 0 if invalid.
+    print -r -- "$1"; shift
+    local i choice
+    for (( i = 1; i <= $#; i++ )); do print -r -- "$i) ${@[i]}"; done
+    read "choice?Enter your choice: "
+    if [[ "$choice" == <1-> ]] && (( choice <= $# )); then REPLY=$choice; else REPLY=0; fi
 }
 
 _pi_model_menu() {
-    # Displays an interactive menu to select a model for a given provider.
-    # $1: The selected provider name (e.g., "openai").
-    # Sets `selected_model` in the parent scope.
-    local provider="$1"
-    local model_config_file=""$(cd "$(dirname "${(%):-%x}")" && pwd)/.pi_models.conf""
-    local -a model_ids
-    local -a model_names
-    local in_section=false
-
-    # Use awk to parse the INI-style config file
-    local models_data=$(awk -v provider="[$provider]" '
-        $0 == provider { in_section = 1; next }
-        /^\[/ { in_section = 0 }
-        in_section && /=/ { print }
-    ' "$model_config_file")
-
-    if [[ -z "$models_data" ]]; then
-        echo "Warning: No models found for provider '$provider' in $model_config_file."
-        selected_model="" # Ensure it's empty
-        return 1
-    fi
-    
-    while IFS='=' read -r id name; do
-        model_ids+=("$id")
-        # Remove quotes from the friendly name
-        model_names+=("$(echo "$name" | tr -d '\"')")
-    done <<< "$models_data"
-
-    echo "Select a model for '$provider':"
-    local i=1
-    for name in "${model_names[@]}"; do
-        echo "$i) $name"
-        ((i++))
-    done
-
-    echo -n "Enter your choice: "
-    read choice
-
-    if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -gt 0 && "$choice" -le "${#model_ids[@]}" ]]; then
-        # zsh arrays are 1-indexed, so the menu number is already the array
-        # index - subtracting 1 here selected the previous model in the list
-        # (and nothing at all for choice 1).
-        selected_model="${model_ids[$choice]}"
-    else
-        echo "Invalid choice. Aborting."
-        selected_model=""
-        return 1
-    fi
-    return 0
-}
-
-_pi_handle_providers() {
-    # Main orchestrator for the provider management feature.
-    # Sets `provider_args` in the parent scope if a provider is chosen.
-    local provider_file=".pi_providers.enc"
-    local model_config_file=""$(cd "$(dirname "${(%):-%x}")" && pwd)/.pi_models.conf""
-    local password=""
-    
-    # --- New: Check for model config and create if missing ---
-    if [ ! -f "$model_config_file" ]; then
-        echo "Model configuration file not found. Creating a default '$model_config_file'."
-        # This uses a here-document to write the default config
-        cat > "$model_config_file" <<'EOF'
+    # $1: provider name. Returns the chosen model id in REPLY.
+    if [[ ! -f "$_PI_MODELS_CONF" ]]; then
+        echo "Model configuration file not found. Creating a default '$_PI_MODELS_CONF'."
+        cat > "$_PI_MODELS_CONF" <<'EOF'
 # This file configures the models available for each provider in the pi wrapper script.
 # Format: model_id="Friendly Display Name"
 
 [google]
 gemini-flash-latest="Gemini Flash (Latest)"
-gemini-1.5-pro-latest="Gemini 1.5 Pro"
+gemini-3.1-pro-preview="Gemini 3.1 Pro (Preview)"
+gemini-2.5-flash="Gemini 2.5 Flash"
 
 [openai]
-gpt-4o="GPT-4o (Omni)"
-gpt-4o-mini="GPT-4o Mini"
-gpt-4-turbo="GPT-4 Turbo"
+gpt-5.5="GPT-5.5"
+gpt-5.4-mini="GPT-5.4 Mini"
+gpt-5.3-codex="GPT-5.3 Codex"
 
 [anthropic]
-claude-3-5-sonnet-20240620="Claude 3.5 Sonnet"
-claude-3-opus-20240229="Claude 3 Opus"
-claude-3-haiku-20240307="Claude 3 Haiku"
+claude-opus-5="Claude Opus 5"
+claude-sonnet-5="Claude Sonnet 5"
+claude-haiku-4-5="Claude Haiku 4.5"
 EOF
     fi
 
-    if [ ! -f "$provider_file" ]; then
-        # Workflow A: First-time initialization
-        echo -n "No provider file found. Create one? [Y/n] "
-        read create_choice
-        if [[ "$create_choice" != "n" && "$create_choice" != "N" ]]; then
-            _pi_get_password "Enter new password for this project: " "confirm"
-            password=$REPLY
-            _pi_add_new_provider ""
-            local new_providers=$REPLY
-            _pi_encrypt_providers "$new_providers" "$password"
-            
-            # Set the provider for the current session
-            selected_provider="${new_providers%%=*}"
-            selected_key="${new_providers#*=}"
-        fi
-    else
-        # Workflow B: Standard execution
-        _pi_get_password "Enter provider password for this project: "
-        password=$REPLY
-        
-        local providers_plaintext=$(_pi_decrypt_providers "$password")
-        if [[ -z "$providers_plaintext" ]]; then
-            echo "Decryption failed. Invalid password."
-            return 1 # Abort
-        fi
-
-        _pi_provider_menu "$providers_plaintext"
-        local menu_result=$REPLY
-        
-        if [[ "$menu_result" == "add_new" ]]; then
-            _pi_add_new_provider "$providers_plaintext"
-            local updated_providers=$REPLY
-            _pi_encrypt_providers "$updated_providers" "$password"
-            echo "Provider added successfully."
-            # For now, we just exit. The user can re-run to select the new provider.
-            return 1 # Simple approach: end here.
-        fi
-    fi
-    
-    # --- Updated Logic: Use dynamic model selection ---
-    if [[ -n "$selected_provider" && -n "$selected_key" ]]; then
-        local selected_model=""
-        if _pi_model_menu "$selected_provider"; then
-            # If a model was successfully selected
-            if [[ -n "$selected_model" ]]; then
-                provider_args=("--provider" "$selected_provider" "--model" "$selected_model")
-                # The 'pi' command expects the API key as an environment variable (e.g., OPENAI_API_KEY),
-                # not as a command-line flag. This converts the provider name to the correct env var format and exports it.
-                local env_var_name
-                env_var_name=$(echo "$selected_provider" | tr '[:lower:]' '[:upper:]')_API_KEY
-                export "${env_var_name}=${selected_key}"
-
-                echo "Using provider: $selected_provider, Model: $selected_model"
-            else
-                # This case should ideally not be hit if _pi_model_menu works correctly
-                echo "Error: Model selection failed. Aborting."
-                return 1
-            fi
-        else
-            # _pi_model_menu returned a failure (e.g., no models in config or invalid choice)
-            echo "Aborting due to model selection issue."
-            return 1
-        fi
-    fi
-    
-    return 0
-}
-
-
-# --- Section 2: Session Recording & Management ---
-
-_pi_sanitize_filename() {
-    echo "$1" | sed -e 's/[^a-zA-Z0-9._]/-/g' -e 's/--\+/-/g' -e 's/^-//' -e 's/-$//'
-}
-
-_pi_parse_args() {
-    # zsh arrays are 1-indexed. Iterating 0..n-1 read the empty slot 0 and
-    # never reached the final element, which prepended an empty argument and
-    # silently dropped the last one (e.g. the value of --model).
-    local temp_args=()
-    local i=1
-    local argc=${#pi_args[@]}
-
-    while (( i <= argc )); do
-        if [[ "${pi_args[i]}" == "--name" ]]; then
-            if (( i < argc )) && [[ -n "${pi_args[i+1]}" ]]; then
-                custom_session_name="${pi_args[i+1]}"
-                (( i += 2 ))
-            else
-                echo "Warning: --name flag provided without a value. Ignoring."
-                (( i++ ))
-            fi
-        else
-            temp_args+=("${pi_args[i]}")
-            (( i++ ))
+    # Collect `id="Name"` lines from the INI-style [provider] section.
+    local line section
+    local -a ids names
+    for line in "${(@f)$(<"$_PI_MODELS_CONF")}"; do
+        if [[ "$line" == \[*\] ]]; then
+            section=${line[2,-2]}
+        elif [[ "$section" == "$1" && "$line" == [^#]*=* ]]; then
+            ids+=("${line%%=*}")
+            names+=("${${line#*=}//\"/}")
         fi
     done
 
-    pi_args=("${temp_args[@]}")
+    if (( ! ${#ids} )); then
+        echo "Warning: No models found for provider '$1' in $_PI_MODELS_CONF."
+        return 1
+    fi
+
+    _pi_menu "Select a model for '$1':" "${names[@]}"
+    if (( ! REPLY )); then
+        echo "Invalid choice. Aborting."
+        return 1
+    fi
+    REPLY=${ids[REPLY]}
 }
 
+_pi_provider_env_var() {
+    # Prints the environment variable pi reads the API key from for provider $1.
+    # Most follow PROVIDER_API_KEY (hyphens -> underscores); the exceptions
+    # below are taken from pi-coding-agent 0.85.1's provider table.
+    case "$1" in
+        google)                     echo "GEMINI_API_KEY" ;;
+        google-vertex)              echo "GOOGLE_CLOUD_API_KEY" ;;
+        azure-openai-responses)     echo "AZURE_OPENAI_API_KEY" ;;
+        vercel-ai-gateway)          echo "AI_GATEWAY_API_KEY" ;;
+        moonshotai|moonshotai-cn)   echo "MOONSHOT_API_KEY" ;;
+        huggingface)                echo "HF_TOKEN" ;;
+        opencode-go)                echo "OPENCODE_API_KEY" ;;
+        kimi-coding)                echo "KIMI_API_KEY" ;;
+        cloudflare-workers-ai|cloudflare-ai-gateway) echo "CLOUDFLARE_API_KEY" ;;
+        qwen-token-plan-individual) echo "QWEN_TOKEN_PLAN_API_KEY" ;;
+        *) echo "${${1:u}//-/_}_API_KEY" ;;
+    esac
+}
+
+_pi_handle_providers() {
+    # Unlocks (or creates) the project's provider file and lets the user pick a
+    # provider and model. Sets `provider_args` in the caller's scope.
+    local password plaintext choice reply new_provider attempt
+    local -a lines
+
+    if [[ ! -f "$provider_file" ]]; then
+        # First-time initialization: re-ask for the provider on bad input.
+        read "reply?No provider file found. Create one? [Y/n] "
+        [[ "$reply" == [nN] ]] && return 0
+        _pi_get_password "Enter new password for this project: " || return 1
+        password=$REPLY
+        for (( attempt = 1; attempt <= _PI_MAX_RETRIES; attempt++ )); do
+            _pi_add_new_provider "" && break
+        done
+        if [[ -z "$new_provider" ]]; then
+            # Don't write an empty file - it would decrypt to nothing and
+            # be reported as a bad password on every later run.
+            echo "No provider file created."
+            return 1
+        fi
+    else
+        # Show the menu again when adding a provider fails (blank/invalid input).
+        _pi_unlock || return 1
+        lines=(${(f)plaintext})
+        for (( attempt = 1; ; attempt++ )); do
+            _pi_menu "Select a provider for this session:" "${lines[@]%%=*}" \
+                "[Add a new provider]" "[Continue without a provider]"
+            choice=$REPLY
+            if (( choice >= 1 && choice <= ${#lines} )); then
+                break  # an existing provider: nothing to save
+            elif (( choice != ${#lines} + 1 )); then
+                return 0  # "Continue without a provider", or an invalid choice.
+            fi
+            _pi_add_new_provider "$plaintext" && break
+            if (( attempt >= _PI_MAX_RETRIES )); then
+                echo "Too many failed attempts. Aborting."
+                return 1
+            fi
+            echo
+        done
+    fi
+
+    # A provider was just added or updated: save it and use it for this session.
+    if [[ -n "$new_provider" ]]; then
+        plaintext=$REPLY
+        _pi_encrypt_providers "$plaintext" "$password"
+        echo "Provider saved successfully."
+        lines=(${(f)plaintext})
+        choice=${lines[(i)${(b)new_provider}=*]}
+    fi
+
+    local provider=${lines[choice]%%=*} key=${lines[choice]#*=}
+    if ! _pi_model_menu "$provider"; then
+        echo "Aborting due to model selection issue."
+        return 1
+    fi
+    provider_args=("--provider" "$provider" "--model" "$REPLY")
+    # pi takes the API key from an environment variable (e.g. OPENAI_API_KEY), not a flag.
+    export "$(_pi_provider_env_var "$provider")=$key"
+    echo "Using provider: $provider, Model: $REPLY"
+}
+
+# --- Section 2: Session Recording & Management ---
+#
 # Session resumption is delegated to pi itself (--resume/-r, --continue/-c,
-# --session, --fork). pi owns real conversation state; the files this wrapper
-# writes to $SESSIONS_DIR are script(1) typescripts - terminal recordings with
-# escape sequences and TUI chrome - and are for human reading only. The wrapper
-# used to rebuild a prompt by cat-ing one back into pi, which discarded the
-# selected provider, broke on logs larger than ARG_MAX (~1MB), and replayed a
-# screen recording as if it were a conversation.
+# --session, --fork); pi owns the real conversation state. The logs written to
+# $sessions_dir are script(1) terminal recordings, for human reading only.
+
+_pi_sanitize_filename() {
+    setopt localoptions extendedglob
+    local name=${1//[^a-zA-Z0-9._]/-}
+    name=${name//-##/-}
+    name=${name#-}
+    print -r -- "${name%-}"
+}
+
+_pi_parse_args() {
+    # Picks up `--name|-n <value>` into `custom_session_name` for the log file
+    # name. The flag stays in `pi_args`, since pi uses it too: as the session's
+    # display name in `pi -r` / `/resume`. A flag with no value is dropped.
+    local -a rest
+    local i
+    for (( i = 1; i <= ${#pi_args}; i++ )); do
+        if [[ "${pi_args[i]}" != (--name|-n) ]]; then
+            rest+=("${pi_args[i]}")
+        elif [[ -n "${pi_args[i+1]}" ]]; then
+            custom_session_name=${pi_args[i+1]}
+            rest+=("${pi_args[i]}" "${pi_args[++i]}")
+        else
+            echo "Warning: ${pi_args[i]} flag provided without a value. Ignoring."
+        fi
+    done
+    pi_args=("${rest[@]}")
+}
+
+_pi_session_label() {
+    # Prints a one-line description of pi session file $1, like pi's own picker:
+    # its name if it has one (else its first message), and how long ago it was used.
+    zmodload -F zsh/stat b:zstat
+    zmodload zsh/datetime
+    local label mtime age
+    if (( $+commands[jq] )); then
+        label=$(jq -rs '
+            ([.[] | select(.type == "session_info") | .name] | last) //
+            ([.[] | select(.type == "message" and .message.role == "user") | .message.content
+              | if type == "string" then . else map(select(.type == "text").text) | join(" ") end][0]) //
+            ""' "$1" 2>/dev/null)
+        label=${${(j: :)${=label}}[1,50]}  # collapse whitespace/newlines, cap the length
+    fi
+    zstat -A mtime +mtime "$1"
+    age=$(( EPOCHSECONDS - mtime ))
+    if   (( age < 60 ));    then age="just now"
+    elif (( age < 3600 ));  then age="$(( age / 60 )) min ago"
+    elif (( age < 7200 ));  then age="1 hour ago"
+    elif (( age < 86400 )); then age="$(( age / 3600 )) hours ago"
+    else age="on $(strftime %Y-%m-%d $mtime)"; fi
+    print -r -- "${label:+\"$label\", }$age"
+}
+
+_pi_session_menu() {
+    # Asks whether to start a new session (and its name) or pick up a previous
+    # one, and adds the matching flags to `pi_args`. Skipped when the user's
+    # own arguments already choose a session or run pi non-interactively.
+    local arg name attempt
+    for arg in "${pi_args[@]}"; do
+        [[ "$arg" == (-c|--continue|-r|--resume|--session|--session-id|--fork|--no-session|-n|--name|-p|--print) ]] && return 0
+    done
+
+    local -a sessions=("$HOME/.pi/agent/sessions/$(_pi_project_key)"/*.jsonl(N.om))  # newest first
+    if (( ${#sessions} )); then
+        for (( attempt = 1; ; attempt++ )); do
+            _pi_menu "Session for this folder:" "New session" \
+                "Continue last session ($(_pi_session_label "${sessions[1]}"))" \
+                "Choose a previous session..."
+            case $REPLY in
+                1) break ;;
+                2) pi_args+=("--continue"); return 0 ;;
+                3) pi_args+=("--resume"); return 0 ;;  # pi's own picker
+            esac
+            if (( attempt >= _PI_MAX_RETRIES )); then
+                echo "Too many failed attempts. Aborting."
+                return 1
+            fi
+            echo "Invalid choice. Please try again."
+        done
+    fi
+
+    read -r "name?Session name (optional, press Enter to skip): "
+    [[ -n "$name" ]] && pi_args+=("--name" "$name")  # names pi's session and the log file
+    return 0
+}
+
+_pi_log_path() {
+    # Prints a log path in $sessions_dir for base name $1 that doesn't exist
+    # yet, adding -2, -3, ... so a reused session name never overwrites a log.
+    local log="$sessions_dir/$1.log" n=2
+    while [[ -e "$log" ]]; do log="$sessions_dir/$1-$(( n++ )).log"; done
+    print -r -- "$log"
+}
 
 _pi_run_new_session() {
-    local temp_log_file="$SESSIONS_DIR/.session_inprogress_$$.tmp"
-
-    trap '
-        if [ -f "'"$temp_log_file"'" ]; then
-            local final_name="$SESSIONS_DIR/$(date +"%Y-%m-%d_%H-%M-%S")_INCOMPLETE.log"
-            mv "'"$temp_log_file"'" "$final_name"
-            echo -e "\nPi session terminated unexpectedly. Partial log saved to $final_name"
-        fi
-    ' EXIT
+    local tmp="$sessions_dir/.session_inprogress_$$.tmp" name log
 
     echo "Starting Pi session..."
     echo "DEBUG: Running command ->" "pi" "${pi_args[@]}"
-    script -q "$temp_log_file" command pi "${pi_args[@]}"
-
-    trap - EXIT
-
-    local final_name=""
-    if [[ -n "$custom_session_name" ]]; then
-        final_name="$custom_session_name"
-    else
-        echo -n "Enter a name for this session (optional, press Enter for timestamp): "
-        read session_name_input
-        if [[ -n "$session_name_input" ]]; then
-            final_name="$session_name_input"
-        else
-            final_name="$(date +"%Y-%m-%d_%H-%M-%S")"
+    {
+        script -q "$tmp" command pi "${pi_args[@]}"
+        name=$(_pi_sanitize_filename "$custom_session_name")
+        log=$(_pi_log_path "${name:-$(date +%Y-%m-%d_%H-%M-%S)}")
+        mv "$tmp" "$log" && echo "Pi session ended. Log saved to $log"
+    } always {
+        # Interrupted before the log was named (e.g. Ctrl+C): keep the partial log.
+        if [[ -f "$tmp" ]]; then
+            log=$(_pi_log_path "$(date +%Y-%m-%d_%H-%M-%S)_INCOMPLETE")
+            mv "$tmp" "$log"
+            print "\nPi session terminated unexpectedly. Partial log saved to $log"
         fi
-    fi
-
-    local sanitized_name=$(_pi_sanitize_filename "$final_name")
-    local final_log_file="$SESSIONS_DIR/${sanitized_name}.log"
-
-    mv "$temp_log_file" "$final_log_file"
-    echo "Pi session ended. Log saved to $final_log_file"
+    }
 }
 
 pi() {
-    # --- Main Entry Point & Orchestrator ---
-    local SESSIONS_DIR="./.pi_sessions"
-    mkdir -p "$SESSIONS_DIR"
+    # Main entry point: pick session and provider/model, then run and record pi.
+    local provider_file sessions_dir custom_session_name
+    local rules_file="$HOME/.pi/session_rules.md"
+    local -a pi_args=("$@") provider_args rules_args
 
-    # Shared state variables
-    local pi_args=("$@")
-    local custom_session_name=""
-    local provider_args=()
-    local selected_provider="" # Used by provider helpers
-    local selected_key=""      # Used by provider helpers
-
-    # --- 1. Handle Provider Selection ---
-    # This must run first to configure credentials for the session.
-    # It sets `provider_args`, which is folded into the command line below.
-    if ! _pi_handle_providers; then
-        return 1 # Abort if provider handling fails (e.g., bad password).
+    # Subcommands (pi update, pi auth, ...) and options that just print and
+    # exit (--help, --version, ...) go straight to pi: no menus, no recording.
+    if [[ "$1" == (install|remove|uninstall|update|list|config|auth) ]] ||
+       (( ${pi_args[(I)(--help|-h|--version|-v|--list-models|--export)]} )); then
+        command pi "$@"
+        return
     fi
 
-    # --- 2. Strip wrapper-only flags (--name) from the user's arguments ---
-    # Runs against the user's own args only, before provider args are added,
-    # so the wrapper never inspects arguments it injected itself.
-    _pi_parse_args
+    _pi_project_files || return 1
+    ( umask 077; mkdir -p "$sessions_dir" ) || return 1  # private: holds keys and terminal logs
+    _pi_session_menu || return 1
+    _pi_handle_providers || return 1  # e.g. bad password
+    _pi_parse_args  # log file name from --name/-n; runs before provider/rules args are added
 
-    # --- 3. Assemble the command line and run ---
-    # Session flags (--resume/-r, --continue/-c, --session, --fork) are passed
-    # through untouched: pi owns session state, this wrapper only records the
-    # terminal. See the note above _pi_run_new_session.
-    pi_args=("--append-system-prompt" "$HOME/.pi/session_rules.md" \
-             "${provider_args[@]}" "${pi_args[@]}")
+    # pi treats --append-system-prompt as a file path if it exists, otherwise as
+    # literal text - so a missing rules file would append the path itself to the
+    # system prompt. Only pass it when the file is really there.
+    if [[ ! -f "$rules_file" ]]; then
+        echo "Warning: $rules_file not found. Starting without session rules."
+    elif [[ ! -r "$rules_file" || ! -s "$rules_file" ]]; then
+        echo "Warning: $rules_file is empty or unreadable. Starting without session rules."
+    else
+        rules_args=("--append-system-prompt" "$rules_file")
+        echo "Session rules: ${rules_file/#$HOME/~} (${#${(f)"$(<"$rules_file")"}} lines)"
+    fi
 
+    pi_args=("${rules_args[@]}" "${provider_args[@]}" "${pi_args[@]}")
     _pi_run_new_session
 }
