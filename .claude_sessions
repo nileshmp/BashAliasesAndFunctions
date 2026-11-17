@@ -1,0 +1,8 @@
+claude.piramal() {
+  local target_dir="${1:-.}"
+  local abs_dir="$(cd "$target_dir" 2>/dev/null && pwd || echo "$target_dir")"
+  
+  CLAUDE_CONFIG_DIR="$HOME/.claude-session-piramal" open -n -a "/Applications/Claude.app" --args \
+    --user-data-dir="$HOME/Library/Application Support/Claude-Session-piramal" \
+    "$abs_dir"
+}

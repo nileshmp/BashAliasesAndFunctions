@@ -255,6 +255,11 @@ function clean.orbstack()
     echo "Cleanup complete!"
 }
 
+funciton find.duplicate.files()
+{
+    find . -type f -exec shasum -a 256 {} + | sort | awk '$1==prev{if(!shown)print line; print; shown=1; next} {prev=$1; line=$0; shown=0}'
+}
+
 
 
 # loading pyenv
@@ -266,6 +271,7 @@ eval "$(pyenv init - zsh)"
 source $HOME/openvpn/connect-piramal-vpn.sh
 source $CUSTOM_SCRIPT_DIR/.service_manager
 source $CUSTOM_SCRIPT_DIR/.pi_customization
+source $CUSTOM_SCRIPT_DIR/.claude_sessions
 
 docker context use orbstack
 
