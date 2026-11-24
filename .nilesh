@@ -21,6 +21,7 @@ alias design.practice.dir='cd $HOME_DIR/work/personal/LearningNotes/design-pract
 
 # alias codemagen.codebase.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebase'
 # alias hotel.service.dir='cd $HOME_DIR/work/Aikyam/clients/Codemagen/codebase/hotel-service'
+alias aikyam.dir='cd $HOME_DIR/work/Aikyam'
 alias aikyam.codebase.dir='cd $HOME_DIR/work/Aikyam/codebase'
 alias devops.dir='cd $HOME_DIR/work/codebase/devops'
 alias source.env.script='source $CUSTOM_SCRIPT_DIR/.nilesh'
@@ -279,3 +280,6 @@ show.nilesh.script.loc
 
 ## list aliasses followed by functions and commands
 zstyle ':completion:*:*:-command-:*' group-order aliases functions commands
+
+autoload -Uz compinit && compinit
+eval "$(analyse_code completion zsh)"
